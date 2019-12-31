@@ -41,11 +41,11 @@ use_case_param=
 case "$use_case" in
     pgap)  
           ;;
-    ani)
-          use_case_param=--ani-only
+    tax-check)
+          use_case_param=--tax-check-only
           ;;
-    pgap-ani)
-          use_case_param=--ani 
+    pgap-tax-check)
+          use_case_param=--tax-check
           ;;
     *)
         die "wrong use_case argument"
