@@ -1,0 +1,6 @@
+fasta:
+  class: File
+  location: ASM2732v1.annotation.nucleotide.1.fasta
+submol:
+  class: File
+  location: submol.yaml

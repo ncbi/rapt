@@ -1,0 +1,6 @@
+fasta:
+  class: File
+  location: SAMN09839044-rid6465353.denovo.assembly.contigs.fasta
+submol:
+  class: File
+  location: submol.yaml

@@ -1,0 +1,29 @@
+{
+   "authors" : [
+      {
+         "author" : {
+            "middle_initial" : "T",
+            "last_name" : "Schwarzenegger",
+            "first_name" : "Arnold"
+         }
+      },
+      {
+         "author" : {
+            "last_name" : "Hamilton",
+            "first_name" : "Linda"
+         }
+      }
+   ],
+   "contact_info" : {
+      "country" : "Lappland",
+      "department" : "Department of Using NCBI",
+      "street" : "1234 Main St",
+      "phone" : "301-555-0245",
+      "last_name" : "Doe",
+      "email" : "jane_doe@gmail.com",
+      "city" : "Docker",
+      "postal_code" : "12345",
+      "organization" : "NCBI",
+      "first_name" : "Jane"
+   }
+}

@@ -1,0 +1,6 @@
+fasta:
+  class: File
+  location: GCA_000167475.1_ASM16747v1_genomic.fasta
+submol:
+  class: File
+  location: submol.yaml
