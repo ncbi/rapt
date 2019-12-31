@@ -1,0 +1,24 @@
+# this ini file maps web server directories to arbitrary tokens.
+# it is maintained in the cfengine system.
+#
+# $Id: toolkitrc,v 1.1 2006/09/14 21:22:12 janderso Exp $
+#
+# this should really be 'web_dir_to_token', but we choose unwisely once upon a time, and now we're stuck with it.
+# forever.
+# there's a moral in here somewhere.
+[Web_dir_to_port]
+pubmed0/WWW/live = 80
+pubmed0/WWW/test = 2441
+pubmed0/WWW/dvlp = 5701
+web/public/htdocs = 80
+web/private/htdocs = 6224
+web/dev/htdocs = 2441
+web/test/htdocs = 2441
+/pmc1/WWW/htdocs/pmc3 = test
+/pmc/WWW/public/current = public
+/pmc/WWW/external-qa/current = external-qa
+/pmc/WWW/internal-qa/current = internal-qa
+web/public/pubchem/htdocs = 80
+web/public/structure/htdocs = 80
+/pmc/WWW/test = test
+/pmc/WWW/book-internal-qa/current = internal-qa

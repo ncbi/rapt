@@ -1,0 +1,7 @@
+assemblies.cache
+gencoll.sqlite
+kmer.sqlite
+ANI_cutoff.xml
+kmer_uri_list
+TaxSynon.tsv
+GCExtract2.sqlite

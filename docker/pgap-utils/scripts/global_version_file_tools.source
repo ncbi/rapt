@@ -1,0 +1,90 @@
+#
+#   global_version_file_tools.source
+#   BASH library of accessor API to global version file (global version manifest)
+#
+
+#
+#   add to global_version_file
+#
+__add_parameter()
+{
+   global_version_file="$1"; shift
+   version="$1"; shift
+   tag="$1"; shift
+   perl -i -pe '$_="" if /^'"$tag"'/' "$global_version_file"
+   cat >> $global_version_file << GVF
+$tag: $version
+GVF
+}
+
+add_global_version()
+{
+   __add_parameter "$1" "$2" "global_version"
+}
+
+add_tc_version()
+{
+   __add_parameter "$1" "$2" "TC_VERSION"
+}
+
+add_github_version()
+{
+   __add_parameter "$1" "$2" "GITHUB_VERSION"
+}
+
+add_bitbucket_version()
+{
+   __add_parameter "$1" "$2" "BITBUCKET_VERSION"
+}
+
+
+add_docker_tag()
+{
+   __add_parameter "$1" "$2" "docker_tag"
+}
+
+#
+#   retrieve from global_version_file
+#
+
+__get_parameter()
+{
+    global_version_file="$1"; shift
+    tag="$1"; shift
+    grep ^"$tag": $global_version_file | cut -f2 -d' '
+}
+
+get_global_version()
+{
+    __get_parameter "$1" global_version
+}
+
+get_tc_version()
+{
+    __get_parameter "$1" TC_VERSION
+}
+
+get_github_version()
+{
+    __get_parameter "$1" GITHUB_VERSION
+}
+
+get_bitbucket_version()
+{
+    __get_parameter "$1" BITBUCKET_VERSION
+}
+
+get_docker_tag()
+{
+    __get_parameter "$1" docker_tag
+}
+
+#
+#   Miscellaneous 
+#
+
+die()
+{
+    echo "$@" >&2
+    exit 1
+}

@@ -1,0 +1,7 @@
+[ncbi]
+name=NCBI
+baseurl=http://yum/yum/ncbi/centos/7/x86_64/
+enabled=1
+gpgcheck=0
+exclude=ncbi-openssh ncbi-openssh*
+metadata_expire=1800
