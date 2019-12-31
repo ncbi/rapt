@@ -1,0 +1,74 @@
+{
+    "variables": {
+        "region": "{{env `AWS_DEFAULT_REGION`}}"
+    },
+    "builders": [
+        {
+            "ami_name": "pgap-ext-dev-{{timestamp}}",
+            "instance_type": "t2.medium",
+            "type": "amazon-ebs",
+            "region": "{{user `region`}}",
+            "source_ami_filter": {
+                "filters": {
+                    "virtualization-type": "hvm",
+                    "name": "amzn-ami*-ebs",
+                    "root-device-type": "ebs"
+                },
+                "owners": [
+                    "137112412989"
+                ],
+                "most_recent": true
+            },
+            "ssh_username": "ec2-user",
+            "ssh_private_key_file": "/panfs/pan1.be-md.ncbi.nlm.nih.gov/gpipe/etc/.gpipe_aws/gp_aws.pem",
+            "ssh_keypair_name": "gp_aws",
+            "user_data": "#!/bin/bash\nyum install -y openssh-clients",
+            "security_group_id": "sg-7d3f4108",
+            "subnet_id": "subnet-46169979",
+            "vpc_id": "vpc-970d7cef"
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "shell",
+            "environment_vars": [ "PATH=/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/aws/bin" ],
+            "inline": [
+                "sleep 30",
+                "sudo yum update -y",
+                "sudo yum erase -y ntp*",
+                "sudo yum groupinstall -y 'Development Tools'",
+                "sudo yum install -y python36 python36-devel python36-pip python36-virtualenv python36-setuptools docker git htop tmux emacs chrony aws-cli singularity",
+                "sudo chkconfig chronyd on",
+                "sudo ln -sf /usr/share/zoneinfo/America/New_York /etc/localtime",
+                "sudo sh -c 'echo -e \"ZONE=/usr/share/zoneinfo/America/New_York\nUTC=true\" > /etc/sysconfig/clock'",
+                "sudo alternatives --set python /usr/bin/python3.6",
+                "sudo -H pip install --upgrade pip",
+                "sudo groupadd gpipe",
+                "sudo usermod -a -G docker ec2-user",
+                "#sudo chgrp gpipe /home/ec2-user",
+                "sudo chmod 750 /home/ec2-user",
+                "sudo -H /usr/local/bin/pip install -U 'cwltool[deps]' cwl-runner",
+                "sudo sh -c 'echo -e \"* soft nofile 8192\n* hard nofile 8192\n\" >> /etc/security/limits.conf'",
+                "sudo sed -i 's/1024:4096/8192:16384/g' /etc/sysconfig/docker"
+            ]
+        },
+        {
+            "type": "file",
+            "source": "keys",
+            "destination": "/tmp"
+        },
+        {
+            "type": "file",
+            "source": "accounts",
+            "destination": "/home/ec2-user"
+        },
+        {
+            "type": "shell",
+            "inline": [
+                "sudo /home/ec2-user/accounts/make_accounts.sh gp_aws badrazat kiryutin slottad thibaudf whlavina liw13 mozese2 kotliaro filippov",
+                "sudo /home/ec2-user/accounts/make_sudo.sh badrazat slottad whlavina mozese2 kotliaro filippov"
+            ]
+        }
+    ]
+}
+
