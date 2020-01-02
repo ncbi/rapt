@@ -6,7 +6,7 @@ echo "##teamcity[progressMessage 'Creating tarball']]"
 VERSION=$(cat VERSION)
 FILENAME=test_genomes-${VERSION}
 TARBALL=$FILENAME.$BRANCH.tgz
-URL="%test_genome_url%${TARBALL}"
+URL="s3://pgap-data/${TARBALL}"
 mv test_genomes $FILENAME
 ln -s $FILENAME test_genomes
 tar cvzf $TARBALL $FILENAME test_genomes
