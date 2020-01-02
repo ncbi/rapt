@@ -1,6 +1,8 @@
 #!/bin/bash
 set -eux
-BRANCH=$1
+BRANCH=$1 # %teamcity.build.branch%
+SVNREV=$2 # %dep.GP_GpPgap2_Release.build.vcs.number.pgap_2% \
+SVNURL=$3 # %dep.GP_GpPgap2_Release.vcsroot.pgap_2.url% we always have this, even for origin/dev builds
 
 echo "##teamcity[progressMessage 'Determine Build Type']]"
 TARBALL=install_gencoll_release.tar.gz
@@ -18,10 +20,7 @@ IMAGE_NAME=${IMAGE_NAME}-${BUILD_TYPE}
 #EOF
  
 echo "##teamcity[progressMessage 'Fetch binaries and third party data']]"
-./fetch-data.sh ${TOOLKIT_TARBALL} \
-    $BRANCH \
-    %dep.GP_GpPgap2_Release.build.vcs.number.pgap_2% \
-    %dep.GP_GpPgap2_Release.vcsroot.pgap_2.url%
+./fetch-data.sh ${TOOLKIT_TARBALL} $BRANCH $SVNREV $SVNURL
 
 echo "##teamcity[progressMessage 'Generate Container Image']]"
 ./build-image.sh ${DOCKER_IMAGE_NAME}
