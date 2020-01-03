@@ -20,11 +20,11 @@ IMAGE_NAME=${IMAGE_NAME}-${BUILD_TYPE}
 #EOF
  
 echo "##teamcity[progressMessage 'Fetch binaries and third party data']]"
-./fetch-data.sh ${TOOLKIT_TARBALL} $BRANCH $SVNREV $SVNURL
+./fetch-data.sh $TARBALL $BRANCH $SVNREV $SVNURL
 
 echo "##teamcity[progressMessage 'Generate Container Image']]"
-./build-image.sh ${DOCKER_IMAGE_NAME}
-./save-image.sh ${DOCKER_IMAGE_NAME}
+./build-image.sh $IMAGE_NAME
+./save-image.sh $IMAGE_NAME
 
 echo "##teamcity[progressMessage 'Archive input-links']]"
 tar cvzf input-links.tgz input-links
