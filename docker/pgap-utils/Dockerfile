@@ -4,7 +4,7 @@ FROM centos:7
 ARG version
 ARG bindir
 ARG libdir
-ARG trnacan_version
+ARG trnascan_version
 
 
 USER root
@@ -36,7 +36,7 @@ RUN tar --exclude='*/etc' --exclude='*/setup' --exclude='*/src.tar.gz' -xvf inst
     && tar xvPf trnascan.tgz -C /
 RUN cd /panfs/pan1.be-md.ncbi.nlm.nih.gov/gpipe/ThirdParty/tRNAscan-SE/ \
     && rm -rf production \
-    && ln -s ${trnacan_version} production
+    && ln -s ${trnascan_version} production
 
 RUN mv ${GP_HOME}/next ${GP_HOME}/current && ln -s ${GP_HOME}/current/arch/x86_64/bin ${GP_HOME}/bin
 
