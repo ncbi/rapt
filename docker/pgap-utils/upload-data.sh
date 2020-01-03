@@ -3,10 +3,11 @@
 #  TeamCity step Copy data to S3
 #
 #
-#  Input parameters: environmental variable PGAP_BUILD_TYPE
+#  Input parameters: PGAP_BUILD_TYPE
 #
 
 set -uexo pipefail
+PGAP_BUILD_TYPE=$1
 
 VERSION=`cat binaries/VERSION`
 

@@ -19,18 +19,22 @@ IMAGE_NAME=${IMAGE_NAME}-${BUILD_TYPE}
 ##teamcity[setParameter name='env.DOCKER_IMAGE_NAME' value='${IMAGE_NAME}']
 #EOF
  
-echo "##teamcity[progressMessage 'Fetch binaries and third party data']]"
+#echo "##teamcity[progressMessage 'Fetch binaries and third party data']"
+echo "##teamcity[blockOpened name='FetchData' description='Fetch binaries and third party data']"
 ./fetch-data.sh $TARBALL $BRANCH $SVNREV $SVNURL
+echo "##teamcity[blockClosed name='FetchData']"
 
-echo "##teamcity[progressMessage 'Generate Container Image']]"
+#echo "##teamcity[progressMessage 'Generate Container Image']"
+echo "##teamcity[blockOpened name='Container' description='Generate Container Image']"
 ./build-image.sh $IMAGE_NAME
 ./save-image.sh $IMAGE_NAME
+echo "##teamcity[blockClosed name='Container']"
 
-echo "##teamcity[progressMessage 'Archive input-links']]"
+echo "##teamcity[progressMessage 'Archive input-links']"
 tar cvzf input-links.tgz input-links
 
-echo "##teamcity[progressMessage 'Materialize Data']]"
+echo "##teamcity[progressMessage 'Materialize Data']"
 ./materialize-data.sh
 
-echo "##teamcity[progressMessage 'Copy data to S3']]"
-./upload-data.sh
+echo "##teamcity[progressMessage 'Copy data to S3']"
+./upload-data.sh $BUILD_TYPE
