@@ -101,10 +101,12 @@ cp -rL \
     "$tmpdir"/next/third-party/sparclbl/* \
     "$tmpdir"/next/third-party/GenomeColl/*/arch/x86_64/bin/gc_get_assembly \
     "$binaries/bin/"
-trnacan_version=2.0.4                    
-cat <<EOF
-##teamcity[setParameter name='env.trnacan_version' value='${trnacan_version}']
-EOF
+
+# The following variable is now set in build-image.sh
+#TRNASCAN_VERSION=2.0.4                    
+#cat <<EOF
+###teamcity[setParameter name='env.TRNASCAN_VERSION' value='${TRNASCAN_VERSION}']
+#EOF
 
 tar cvhpPf "$binaries"/trnascan.tgz /panfs/pan1.be-md.ncbi.nlm.nih.gov/gpipe/ThirdParty/tRNAscan-SE
 
