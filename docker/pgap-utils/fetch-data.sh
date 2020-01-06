@@ -149,7 +149,17 @@ cp -P $third_party_data_source/CDD2 $input/
 #  ... with the exception of GeneMark: need to make sure that we do not drag extra subversions
 #
 mkdir $input/GeneMark
-cp -PLr $third_party_binary_source/GeneMark/ver2.110  $input/GeneMark/
+#
+#   $genemark_version is hardcoded in classic PGAP's genemark.cpp, member variable m_GeneMarkPath
+#   when it changes there we need to copy that here
+#   Theoretically, we could have extracted src.tar.gz from input $TARBALL 
+#   extracted genemark.cpp from there and
+#   heuristically get the version from that source file,
+#   but reliance on heuristic is not really better than relying on hardcoded version
+#
+genemark_version=ver2.110_114
+cp -PLr $third_party_binary_source/GeneMark/"$genemark_version"  $input/GeneMark/
+
 
 #
 #   symlink/readlink with maybe preliminary mkdir
