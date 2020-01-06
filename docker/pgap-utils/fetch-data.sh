@@ -221,6 +221,7 @@ cp $tmpdir/$VERSION/etc/product_rules.prt $input/
 cp $tmpdir/$VERSION/etc/thresholds.xml $input/
 cp $tmpdir/$VERSION/etc/validation-results.xml $input/
 cp $tmpdir/$VERSION/etc/asn2pas.xsl $input/
+cp $tmpdir/$VERSION/etc/ani-report.xsl $input/
 
 #
 #   WARNING: unversioned source! We are not currently using it. It is used in a dead-end cache_entrez_gene step
