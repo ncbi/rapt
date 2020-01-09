@@ -212,7 +212,8 @@ ln -s /panfs/pan1.be-md.ncbi.nlm.nih.gov/gpipe/dev/automated_builds/installation
     
     sqlite3 $input/uniColl_path/kmer.sqlite "select key from KmerMetadata" > sqlite.keys
     join <(sort sqlite.keys) <(sort kmer_uri_list.raw) > $input/kmer_uri_list
-    rm -f kmer_uri_list.raw sqlite.keys
+    # leaver this temporarily for the sake of PGAPX-686
+    # rm -f kmer_uri_list.raw sqlite.keys
 
 #
 #   copy right away, we are already dealing here with a copy
