@@ -214,6 +214,12 @@ ln -s /panfs/pan1.be-md.ncbi.nlm.nih.gov/gpipe/dev/automated_builds/installation
     join <(sort sqlite.keys) <(sort kmer_uri_list.raw) > $input/kmer_uri_list
     # leaver this temporarily for the sake of PGAPX-686
     # rm -f kmer_uri_list.raw sqlite.keys
+    nstill_missing=$(join -v 2 <(sort sqlite.keys) <(sort kmer_uri_list) | wc -l)
+    
+    if [[ $nstill_missing -gt 0 ]]; then
+        echo ERROR: after join resulting kmer_uri_list still has keys not present in SQLITE3 storage >&2
+        exit 1
+    fi
 
 #
 #   copy right away, we are already dealing here with a copy
