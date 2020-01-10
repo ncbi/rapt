@@ -202,23 +202,6 @@ ln -s /panfs/pan1.be-md.ncbi.nlm.nih.gov/gpipe/home/badrazat/jira/PGAPX-584-ani_
 #   miscellanious files
 #
 ln -s /panfs/pan1.be-md.ncbi.nlm.nih.gov/gpipe/dev/automated_builds/installations/regr_bct/current/third-party/data/BacterialPipeline/ANI_cutoff/ANI_cutoff.xml $input/
-/panfs/pan1/gpipe/bacterial_pipeline/system/current/bin/gp_sh bact /panfs/pan1/gpipe/bacterial_pipeline/system/current/bin/gp_sql \
-    -database GCExtract \
-    -output kmer_uri_list.raw \
-    -server GPIPE_BCT \
-    -sql-file /panfs/pan1/gpipe/bacterial_pipeline/system/current/etc/ani/kmer.bacterial.reference.sql 
-
-# there is always slight desync between kmer.sqlite and reference list, we need to set intersect 
-    
-    sqlite3 $input/kmer.sqlite "select key from KmerMetadata" > sqlite.keys
-    join <(sort sqlite.keys) <(sort kmer_uri_list.raw) > $input/kmer_uri_list
-    nstill_missing=$(join -v 2 <(sort sqlite.keys) <($input/sort kmer_uri_list) | wc -l)
-    rm -f kmer_uri_list.raw sqlite.keys
-    if [[ $nstill_missing -gt 0 ]]; then
-        echo ERROR: after join resulting kmer_uri_list still has keys not present in SQLITE3 storage >&2
-        exit 1
-    fi
-
 #
 #   copy right away, we are already dealing here with a copy
 #
