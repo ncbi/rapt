@@ -15,10 +15,28 @@ rm -f $input/uniColl_path/Naming.fa # 4Gb shaved off
 rm -rf $output
 
 cp -rL $input $output
+#
+#   Process kmer things
+#
 cp -rL /panfs/pan1.be-md.ncbi.nlm.nih.gov/gpipe/ThirdParty/ExternalData/Pathogen/kmer-cache-minhash/18.sqlite/production/* \
     $output/
+    
+/panfs/pan1/gpipe/bacterial_pipeline/system/current/bin/gp_sh bact /panfs/pan1/gpipe/bacterial_pipeline/system/current/bin/gp_sql \
+    -database GCExtract \
+    -output kmer_uri_list.raw \
+    -server GPIPE_BCT \
+    -sql-file /panfs/pan1/gpipe/bacterial_pipeline/system/current/etc/ani/kmer.bacterial.reference.sql 
+
+# there is a high probability of slight desync between kmer.sqlite and reference list, 
+# we need to set intersect now to take care of it here
+   
+sqlite3 $output/kmer.sqlite "select key from KmerMetadata" > sqlite.keys
+join <(sort sqlite.keys) <(sort kmer_uri_list.raw) > $output/kmer_uri_list
+rm -f kmer_uri_list.raw sqlite.keys
+
 rm -f $output/assemblies.fasta # 41G shaved off
 rm -f $output/uniColl_path/Naming.fa # 4Gb shaved off
+
 #
 #    Special case of POSIX-noncompliancy: UNIX backup files, do not abort, just delete
 #

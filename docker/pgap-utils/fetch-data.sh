@@ -149,7 +149,17 @@ cp -P $third_party_data_source/CDD2 $input/
 #  ... with the exception of GeneMark: need to make sure that we do not drag extra subversions
 #
 mkdir $input/GeneMark
-cp -PLr $third_party_binary_source/GeneMark/ver2.110  $input/GeneMark/
+#
+#   $genemark_version is hardcoded in classic PGAP's genemark.cpp, member variable m_GeneMarkPath
+#   when it changes there we need to copy that here
+#   Theoretically, we could have extracted src.tar.gz from input $TARBALL 
+#   extracted genemark.cpp from there and
+#   heuristically get the version from that source file,
+#   but reliance on heuristic is not really better than relying on hardcoded version
+#
+genemark_version=ver2.110_114
+cp -PLr $third_party_binary_source/GeneMark/"$genemark_version"  $input/GeneMark/
+
 
 #
 #   symlink/readlink with maybe preliminary mkdir
@@ -192,18 +202,6 @@ ln -s /panfs/pan1.be-md.ncbi.nlm.nih.gov/gpipe/home/badrazat/jira/PGAPX-584-ani_
 #   miscellanious files
 #
 ln -s /panfs/pan1.be-md.ncbi.nlm.nih.gov/gpipe/dev/automated_builds/installations/regr_bct/current/third-party/data/BacterialPipeline/ANI_cutoff/ANI_cutoff.xml $input/
-/panfs/pan1/gpipe/bacterial_pipeline/system/current/bin/gp_sh bact /panfs/pan1/gpipe/bacterial_pipeline/system/current/bin/gp_sql \
-    -database GCExtract \
-    -output kmer_uri_list.raw \
-    -server GPIPE_BCT \
-    -sql-file /panfs/pan1/gpipe/bacterial_pipeline/system/current/etc/ani/kmer.bacterial.reference.sql 
-
-# there is always slight desync between kmer.sqlite and reference list, we need to set intersect 
-    
-    sqlite3 $input/uniColl_path/kmer.sqlite "select key from KmerMetadata" > sqlite.keys
-    join <(sort sqlite.keys) <(sort kmer_uri_list.raw) > $input/kmer_uri_list
-    rm -f kmer_uri_list.raw sqlite.keys
-
 #
 #   copy right away, we are already dealing here with a copy
 #
@@ -211,6 +209,7 @@ cp $tmpdir/$VERSION/etc/product_rules.prt $input/
 cp $tmpdir/$VERSION/etc/thresholds.xml $input/
 cp $tmpdir/$VERSION/etc/validation-results.xml $input/
 cp $tmpdir/$VERSION/etc/asn2pas.xsl $input/
+cp $tmpdir/$VERSION/etc/ani-report.xsl $input/
 
 #
 #   WARNING: unversioned source! We are not currently using it. It is used in a dead-end cache_entrez_gene step
