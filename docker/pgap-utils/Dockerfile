@@ -13,7 +13,7 @@ COPY --chown=root:root etc /etc
 #
 #  cyrus-sasl-devel hoping it will install old version of SASL that kmer executables need.
 # 
-RUN yum -y install binutils perl sqlite ncbi-crispr1.0 nodejs ncbi-gcc730-opt-libs  ncbi-gcc493-opt-libs PyYAML
+RUN yum -y install binutils perl sqlite ncbi-crispr1.01 nodejs ncbi-gcc730-opt-libs  ncbi-gcc493-opt-libs PyYAML
 RUN ln -s /usr/bin/perl /usr/bin/perl5.16 \
     && ln -s /usr/bin/perl /opt/perl/5.16.3/bin/perl \
     && ln -s /usr/bin/node /usr/bin/nodejs \
