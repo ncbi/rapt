@@ -18,7 +18,7 @@ for files_from in files-from.*.list; do
     (
         package=$(echo "$files_from" | perl -pe 's{files-from\.}{}; s{\.list}{}' )
         tarfile=${inputdir}.${PGAP_BUILD_TYPE}."$package".tgz
-        tar cvzf ${tarfile} --files-from <(
+        tar cvzf ${tarfile}  --mode='u+w' --files-from <(
             cat "$files_from" |
             grep -vP '^#'  | 
             grep -P '\S' | 
