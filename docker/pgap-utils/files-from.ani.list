@@ -1,8 +1,9 @@
+ANI_cutoff.xml
+GCExtract2.sqlite
+TaxSynon.tsv
+ani-report.xsl
 assemblies.cache
 gencoll.sqlite
 kmer.sqlite
-ANI_cutoff.xml
 kmer_uri_list
-TaxSynon.tsv
-GCExtract2.sqlite
-ani-report.xsl
+uniColl_path/taxonomy.sqlite3
