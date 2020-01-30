@@ -159,7 +159,8 @@ mkdir $input/GeneMark
 #
 genemark_version=ver2.110_114
 source_genemark_location="$third_party_binary_source/GeneMark/$genemark_version"
-actual_genemark_version=$(basename $(readlink -f "$source_genemark_location"))
+actual_genemark_version=$(readlink -f "$source_genemark_location" | 
+    perl -pe 's{^.*ThirdParty/GeneMark/}{}g')
 cp -PLr "$source_genemark_location"  $input/GeneMark/
 echo -e "VERSION\tGeneMark\t$actual_genemark_version" > $input/packages.versions
 
