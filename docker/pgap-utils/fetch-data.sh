@@ -158,7 +158,10 @@ mkdir $input/GeneMark
 #   but reliance on heuristic is not really better than relying on hardcoded version
 #
 genemark_version=ver2.110_114
-cp -PLr $third_party_binary_source/GeneMark/"$genemark_version"  $input/GeneMark/
+source_genemark_location="$third_party_binary_source/GeneMark/$genemark_version"
+actual_genemark_version=$(basename $(readlink -f "$source_genemark_location"))
+cp -PLr "$source_genemark_location"  $input/GeneMark/
+echo -e "VERSION\tGeneMark\t$actual_genemark_version" > $input/packages.versions
 
 
 #

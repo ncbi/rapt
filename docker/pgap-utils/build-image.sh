@@ -16,6 +16,10 @@ VERSION=$(cat binaries/VERSION)
 BINDIR=/panfs/pan1.be-md.ncbi.nlm.nih.gov/gpipe/bacterial_pipeline/system/${VERSION}/arch/x86_64/bin
 LIBDIR=/panfs/pan1.be-md.ncbi.nlm.nih.gov/gpipe/bacterial_pipeline/system/${VERSION}/arch/x86_64/lib
 TRNASCAN_VERSION=2.0.4
+NCBI_CRISPER_VERSION=1.01
+rm -f package.versions
+echo -e "VERSION\ttRNAScan\t$TRNASCAN_VERSION" >> package.versions
+echo -e "VERSION\tncbi_crisper\t$NCBI_CRISPER_VERSION" >> package.versions
 
 docker_tag="$USERNAME/$IMAGE:$VERSION"
 docker_production_tag="$USERNAME/$IMAGE:latest"
@@ -26,6 +30,7 @@ docker --log-level debug  build \
        --build-arg bindir=${BINDIR} \
        --build-arg libdir=${LIBDIR} \
        --build-arg trnascan_version=${TRNASCAN_VERSION} \
+       --build-arg ncbi_crisper_version=${NCBI_CRISPER_VERSION} \
        -t  "$docker_tag" .
 #       
 # we will never do tagging right after building, see JIRA: GP-24568

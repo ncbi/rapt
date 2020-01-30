@@ -5,6 +5,7 @@ ARG version
 ARG bindir
 ARG libdir
 ARG trnascan_version
+ARG ncbi_crisper_version
 
 
 USER root
@@ -13,7 +14,7 @@ COPY --chown=root:root etc /etc
 #
 #  cyrus-sasl-devel hoping it will install old version of SASL that kmer executables need.
 # 
-RUN yum -y install binutils perl sqlite ncbi-crispr1.01 nodejs ncbi-gcc730-opt-libs  ncbi-gcc493-opt-libs PyYAML
+RUN yum -y install binutils perl sqlite ncbi-crispr${ncbi_crisper_version} nodejs ncbi-gcc730-opt-libs  ncbi-gcc493-opt-libs PyYAML
 RUN ln -s /usr/bin/perl /usr/bin/perl5.16 \
     && ln -s /usr/bin/perl /opt/perl/5.16.3/bin/perl \
     && ln -s /usr/bin/node /usr/bin/nodejs \
@@ -56,6 +57,7 @@ ENV NI_SERVICE_NAME_TAXONOMY="some bogus value"
 ENV NI_SERVICE_NAME_TAXONOMY3="some bogus value"
 
 COPY binaries/bin ${GP_HOME}/third-party/bin
+COPY package.versions ${GP_HOME}/third-party/
 COPY binaries/bin/* ${GP_HOME}/bin/
 COPY scripts/* ${bindir}/
 #COPY binaries/tRNAscan-SE /panfs/pan1.be-md.ncbi.nlm.nih.gov/gpipe/ThirdParty/tRNAscan-SE
@@ -63,6 +65,7 @@ COPY scripts/* ${bindir}/
 COPY ncbirc /netopt/ncbi_tools64/.ncbirc
 
 RUN rm -rf binaries
+
 
 WORKDIR /home/gpipe
 
