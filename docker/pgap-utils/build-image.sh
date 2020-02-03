@@ -37,3 +37,5 @@ docker --log-level debug  build \
 #
 # temporarily introduce tagging back for the sake of testing  GP-24592
 #docker tag "$docker_tag"  "$docker_production_tag" # comment this out during testing. "latest" tag is always production
+
+docker run -i "$docker_tag" cat /panfs/pan1.be-md.ncbi.nlm.nih.gov/gpipe/bacterial_pipeline/system/third-party/package.versions >> input-links/packages.versions
