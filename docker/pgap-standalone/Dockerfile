@@ -4,8 +4,8 @@ FROM ncbi/${BASE}:${PGAP_VERSION}
 
 USER root
 
-COPY pgap /pgap
-COPY taxcheck /pgap
+COPY pgap /pgap/
+COPY taxcheck /pgap/
 
 WORKDIR /pgap
 
