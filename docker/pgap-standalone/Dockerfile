@@ -16,7 +16,7 @@ RUN yum -y install https://centos7.iuscommunity.org/ius-release.rpm
 RUN yum -y install python36u python36u-pip python36u-devel nodejs
 RUN pip3.6 install -U cwltool[deps] PyYAML cwlref-runner
 
-RUN cat input.yaml MG37/input.yaml > mg37_input.yaml
+#RUN cat input.yaml MG37/input.yaml > mg37_input.yaml
 RUN mkdir /pgap/input
 
 CMD ["/bin/sh"]
