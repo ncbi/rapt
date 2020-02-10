@@ -28,7 +28,7 @@ subprocess.run(["sudo", "rm", "-rf", ".docker"], check=True)
 
 # Get input data
 if is_release:
-    url=f"https://s3.amazonaws.com/pgap/input-{version}.tgz"
+    url=f"https://s3.amazonaws.com/pgap/input-{version}.pgap.tgz"
 else:
-    url=f"https://s3.amazonaws.com/pgap/input-{version}.{branch}.tgz"
+    url=f"https://s3.amazonaws.com/pgap/input-{version}.{branch}.pgap.tgz"
 subprocess.run([f"curl -s {url} | tar xvzf -"], shell=True, check=True)
