@@ -45,8 +45,8 @@ class pgap_control:
             self.debug = ( self.attributes['debug'] == "true" )
 
     def get_version(self):
-        input_dir = glob.glob(f"{self.home_dir}/input-*")[0]
-        name = os.path.basename(input_dir)
+        self.input_dir = glob.glob(f"{self.home_dir}/input-*")[0]
+        name = os.path.basename(self.input_dir)
         self.version = name.replace("input-", "")
 
     def get_dockerimage(self):
@@ -206,7 +206,7 @@ taxid: {self.attributes['taxid']}
 gc_assm_name: {self.attributes['accession']}
 supplemental_data:
     class: Directory
-    location: {self.home_dir}/input
+    location: {self.input_dir}
 submol_block_json:
     class: File
     location: submol.json
