@@ -141,6 +141,7 @@ def main():
     pgap = pgap_control()
 
     if pgap.has_run():
+        atexit.unregister(shutdown) # In this case, we don't want to kill the instance
         print("Work products exist, exiting startup script")
         sys.exit(0)
 
