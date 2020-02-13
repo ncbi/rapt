@@ -1,0 +1,1 @@
+Unit tests of CWL Runners focused on checking runner conformance and compatibility with the features used by PGAP, as well as unit tests of PGAP fundamental buildring blocks (like ASN-Cache building).
