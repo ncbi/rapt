@@ -1,0 +1,11 @@
+taxon_db:
+    class: File
+    location: taxonomy.sqlite3
+fasta:
+    class: File
+    location: test.fa
+submit_block_template:
+  class: File
+  location: test.template
+taxid: 243273
+gc_assm_name: MG37
