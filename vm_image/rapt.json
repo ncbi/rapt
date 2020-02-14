@@ -1,0 +1,84 @@
+{
+    "variables": {
+        "branch": "",
+        "version": "",
+        "buildname": ""
+    },
+    "builders": [
+        {
+            "type": "googlecompute",
+            "instance_name": "pgapx-{{user `buildname`}}-packer",
+            "image_description": "Image for running RAPT as a fire and forget.",
+            "image_name": "pgapx-{{user `buildname`}}-{{timestamp}}",
+            "account_file": "rapt-gcp-auth.json",
+            "project_id": "strides-rapt",
+            "source_image_family": "centos-7",
+            "ssh_username": "pgap",
+            "machine_type": "n1-standard-1",
+            "disk_size": "80",
+            "state_timeout": "20m",
+            "zone": "us-east4-c"
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "file",
+            "source": "google-fluentd",
+            "destination": "/home/pgap/"
+        },
+        {
+            "type": "file",
+            "source": "install-pgap.py",
+            "destination": "/home/pgap/"
+        },
+        {
+            "type": "shell",
+            "environment_vars": [ "PATH=/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin" ],
+            "inline": [
+                "sleep 30",
+                "set -o verbose",
+                "sudo yum install -y yum-utils device-mapper-persistent-data lvm2",
+                "sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo",
+                "sudo yum update -y",
+                "sudo yum erase -y ntp* yum-cron",
+                "sudo yum install -y python36 python36-devel python36-pip python36-virtualenv python36-setuptools python36-requests docker-ce docker-ce-cli containerd.io htop tmux chrony gcc nodejs git-core",
+                "sudo systemctl enable docker",
+                "sudo systemctl start docker",
+                "sudo chkconfig chronyd on",
+                "sudo ln -sf /usr/share/zoneinfo/America/New_York /etc/localtime",
+                "sudo sh -c 'echo -e \"ZONE=/usr/share/zoneinfo/America/New_York\nUTC=true\" > /etc/sysconfig/clock'",
+                "echo \"net.ipv4.ip_forward=1\" | sudo tee -a /etc/sysctl.conf > /dev/null",
+                "sudo groupadd gpipe",
+                "sudo -H pip3 install -U 'cwltool[deps]' cwl-runner",
+                "export DO_NOT_INSTALL_CATCH_ALL_CONFIG=1",
+                "curl -sSO https://dl.google.com/cloudagents/install-logging-agent.sh",
+                "sudo --preserve-env=DO_NOT_INSTALL_CATCH_ALL_CONFIG bash install-logging-agent.sh",
+                "rm install-logging-agent.sh",
+                "sudo mkdir -p /etc/google-fluentd/config.d",
+                "sudo mv /home/pgap/google-fluentd/* /etc/google-fluentd/config.d",
+                "rmdir /home/pgap/google-fluentd",
+                "sudo chown -R root:root /etc/google-fluentd/config.d",
+                "sudo chmod 750 /etc/google-fluentd/config.d",
+                "sudo find /etc/google-fluentd/config.d -type f -exec chmod 640 {} +",
+                "sudo groupadd gpipe-sudoers",
+                "sudo groupadd -f docker",
+                "echo '%gpipe-sudoers ALL=(ALL:ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/gpipe_sudoers > /dev/null",
+                "sudo usermod -a -G docker,gpipe-sudoers pgap",
+                "newgrp docker",
+                "mkdir -p /home/pgap/.ssh",
+                "echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDFJbfi2jlLC4zlRzKjYx3t3t2Jwm5tdcd41eBR4Z1tVXZK/uj3TxUVluzRmMOnXSd0gFLtIqD7WN4/rzoWjU7Uy6n1IcGxCbk9QDDkw0xqBbwtzL2ZlrOc7xjef0C8M8wIT1ptUk6iWFCovUL/mf6rOEDQsZjayHXhTIVJYrz3jBiIFVJh0flZtt8hgNW/Y01zGdUx0MJhv61B4EPvcGlgiyuxmajJii9tmtnuR10db3SYfGb/v1cGfOID2Q5FVYbl2RrXgitoWNOxdHT6jEaxcM9k2OJLJ7V9moci/3U5ASHYxkBIJFyHTKkSyGMNyxXBv9Ke/HcWJRv8Mz1RrhTf gpipe-dev@ncbi.nlm.nih.gov' > /home/pgap/.ssh/authorized_keys",
+                "chmod 600 /home/pgap/.ssh/authorized_keys"
+            ]
+        },
+        {
+            "type": "shell",
+            "environment_vars": [ "PATH=/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin" ],
+            "inline": [
+                "chmod +x install-pgap.py",
+                "./install-pgap.py {{user `version`}} {{user `branch`}}",
+                "rm install-pgap.py"
+            ]
+        }
+    ]
+}
+
