@@ -7,13 +7,13 @@
     "builders": [
         {
             "type": "googlecompute",
-            "instance_name": "pgapx-{{user `buildname`}}-packer",
+            "instance_name": "rapt-{{user `buildname`}}-packer",
             "image_description": "Image for running RAPT as a fire and forget.",
-            "image_name": "pgapx-{{user `buildname`}}-{{timestamp}}",
+            "image_name": "rapt-{{user `buildname`}}-{{timestamp}}",
             "account_file": "rapt-gcp-auth.json",
             "project_id": "ncbi-rapt",
             "source_image_family": "centos-8",
-            "ssh_username": "pgap",
+            "ssh_username": "rapt",
             "machine_type": "n1-standard-1",
             "disk_size": "100",
             "state_timeout": "20m",
@@ -24,12 +24,12 @@
         {
             "type": "file",
             "source": "google-fluentd",
-            "destination": "/home/pgap/"
+            "destination": "/home/rapt/"
         },
         {
             "type": "file",
             "source": "install-pgap.py",
-            "destination": "/home/pgap/"
+            "destination": "/home/rapt/"
         },
         {
             "type": "shell",
@@ -41,7 +41,10 @@
                 "#sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo",
                 "sudo dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo",
                 "sudo dnf update -y",
-                "sudo dnf install -y --nobest python3-devel python3-virtualenv python3-requests docker-ce docker-ce-cli containerd.io tmux gcc nodejs git-core",
+                "sudo dnf install -y --nobest python3-devel python3-virtualenv python3-requests docker-ce docker-ce-cli containerd.io tmux gcc nodejs git-core boost boost-devel",
+                "dnf group install 'Development Tools'",
+                "git clone https://github.com/ncbi/SKESA",
+                "cd SKESA && make",
                 "sudo systemctl disable firewalld",
                 "sudo systemctl enable --now docker",
                 "sudo ln -sf /usr/share/zoneinfo/America/New_York /etc/localtime",
@@ -54,19 +57,19 @@
                 "sudo --preserve-env=DO_NOT_INSTALL_CATCH_ALL_CONFIG bash install-logging-agent.sh",
                 "rm install-logging-agent.sh",
                 "sudo mkdir -p /etc/google-fluentd/config.d",
-                "sudo mv /home/pgap/google-fluentd/* /etc/google-fluentd/config.d",
-                "rmdir /home/pgap/google-fluentd",
+                "sudo mv /home/rapt/google-fluentd/* /etc/google-fluentd/config.d",
+                "rmdir /home/rapt/google-fluentd",
                 "sudo chown -R root:root /etc/google-fluentd/config.d",
                 "sudo chmod 750 /etc/google-fluentd/config.d",
                 "sudo find /etc/google-fluentd/config.d -type f -exec chmod 640 {} +",
                 "sudo groupadd gpipe-sudoers",
                 "sudo groupadd -f docker",
                 "echo '%gpipe-sudoers ALL=(ALL:ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/gpipe_sudoers > /dev/null",
-                "sudo usermod -a -G docker,gpipe-sudoers pgap",
+                "sudo usermod -a -G docker,gpipe-sudoers rapt",
                 "newgrp docker",
-                "mkdir -p /home/pgap/.ssh",
-                "echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDFJbfi2jlLC4zlRzKjYx3t3t2Jwm5tdcd41eBR4Z1tVXZK/uj3TxUVluzRmMOnXSd0gFLtIqD7WN4/rzoWjU7Uy6n1IcGxCbk9QDDkw0xqBbwtzL2ZlrOc7xjef0C8M8wIT1ptUk6iWFCovUL/mf6rOEDQsZjayHXhTIVJYrz3jBiIFVJh0flZtt8hgNW/Y01zGdUx0MJhv61B4EPvcGlgiyuxmajJii9tmtnuR10db3SYfGb/v1cGfOID2Q5FVYbl2RrXgitoWNOxdHT6jEaxcM9k2OJLJ7V9moci/3U5ASHYxkBIJFyHTKkSyGMNyxXBv9Ke/HcWJRv8Mz1RrhTf gpipe-dev@ncbi.nlm.nih.gov' > /home/pgap/.ssh/authorized_keys",
-                "chmod 600 /home/pgap/.ssh/authorized_keys"
+                "mkdir -p /home/rapt/.ssh",
+                "echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDFJbfi2jlLC4zlRzKjYx3t3t2Jwm5tdcd41eBR4Z1tVXZK/uj3TxUVluzRmMOnXSd0gFLtIqD7WN4/rzoWjU7Uy6n1IcGxCbk9QDDkw0xqBbwtzL2ZlrOc7xjef0C8M8wIT1ptUk6iWFCovUL/mf6rOEDQsZjayHXhTIVJYrz3jBiIFVJh0flZtt8hgNW/Y01zGdUx0MJhv61B4EPvcGlgiyuxmajJii9tmtnuR10db3SYfGb/v1cGfOID2Q5FVYbl2RrXgitoWNOxdHT6jEaxcM9k2OJLJ7V9moci/3U5ASHYxkBIJFyHTKkSyGMNyxXBv9Ke/HcWJRv8Mz1RrhTf gpipe-dev@ncbi.nlm.nih.gov' > /home/rapt/.ssh/authorized_keys",
+                "chmod 600 /home/rapt/.ssh/authorized_keys"
             ]
         },
         {
