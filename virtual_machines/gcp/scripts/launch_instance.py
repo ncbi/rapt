@@ -142,5 +142,5 @@ if __name__ == "__main__":
         recs = json.load(jf)
 
     r = gcp.launch_image(sys.argv[1], sys.argv[2], zone, image_name,
-                         recs["machine_type"], recs["disk_type"])
+                         recs["machine_type"], recs["disk_type"], preemptible=False)
     print(r)
