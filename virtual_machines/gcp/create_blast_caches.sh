@@ -67,7 +67,7 @@ fastaroot=/panfs/pan1.be-md.ncbi.nlm.nih.gov/gpipe/ThirdParty/ExternalData/Bacte
 taxgroup=
 blast_cache_dir=
 blast_cache_dir_scratch=
-if false; then
+if true; then
 for taxgroup_production_dir in $fastaroot/*/production; do
     set_variables "$taxgroup_production_dir"
     mkdir -p "$blast_cache_dir_scratch"
