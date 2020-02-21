@@ -15,7 +15,7 @@
             "source_image_family": "centos-8",
             "ssh_username": "rapt",
             "machine_type": "n1-standard-1",
-            "disk_size": "100",
+            "disk_size": "200",
             "state_timeout": "20m",
             "zone": "us-east4-c"
         }
