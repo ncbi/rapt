@@ -51,7 +51,13 @@ fastaroot=/panfs/pan1.be-md.ncbi.nlm.nih.gov/gpipe/ThirdParty/ExternalData/Bacte
 #   Step 1. Submit BLAST jobs via gp_build_starts construct genus files
 #
 for taxgroup_production_dir in $fastaroot/*/production; do
-    taxgroup=$(dirname taxgroup_production_dir | xargs basename)
+    taxgroup=$(dirname $taxgroup_production_dir | xargs basename)
+    regex='^[0-9]+$'
+    if [[ "$taxgroup" =~ $regex ]]; then
+        true;
+    else
+        false;
+    fi
     blast_cache_dir="blast_hits_cache-$taxgroup.$VERSION"
     blast_cache_dir_scratch="$blast_cache_dir.scratch"
     mkdir -p "$blast_cache_dir_scratch"
@@ -98,6 +104,7 @@ for taxgroup_production_dir in $fastaroot/*/production; do
     taxgroup=$(dirname taxgroup_production_dir | xargs basename)
     blast_cache_dir="blast_hits_cache-$taxgroup.$VERSION"
     blast_cache_dir_scratch="$blast_cache_dir.scratch"
-    cp "$blast_cache_dir_scratch"/{blast_hits.sqlite,genus-list} "$blast_cache_dir" &
+    mkdir -p "$blast_cache_dir"
+    cp "$blast_cache_dir_scratch"/{blast_hits.sqlite,genus-list} "$blast_cache_dir"/ &
 done
 wait
