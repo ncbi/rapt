@@ -13,6 +13,20 @@ set -euxo pipefail
 #   The TC build configurator should include VCS gpipe-teamcity for this to work
 #
 source ./teamcity-utils.sh
+function set_variables() 
+{
+    taxgroup_production_dir="$1";
+    taxgroup=$(dirname $taxgroup_production_dir | xargs basename)
+    regex='^[0-9]+$'
+    if [[ "$taxgroup" =~ $regex ]]; then
+        true;
+    else
+        false;
+    fi
+    blast_cache_dir="blast_hits_cache-$taxgroup.$VERSION"
+    blast_cache_dir_scratch="$blast_cache_dir.scratch"
+}
+
 sdir=$(readlink -f .)
 #
 #   Find current unicoll version 
@@ -50,16 +64,12 @@ fastaroot=/panfs/pan1.be-md.ncbi.nlm.nih.gov/gpipe/ThirdParty/ExternalData/Bacte
 #
 #   Step 1. Submit BLAST jobs via gp_build_starts construct genus files
 #
+taxgroup=
+blast_cache_dir=
+blast_cache_dir_scratch=
+if false; then
 for taxgroup_production_dir in $fastaroot/*/production; do
-    taxgroup=$(dirname $taxgroup_production_dir | xargs basename)
-    regex='^[0-9]+$'
-    if [[ "$taxgroup" =~ $regex ]]; then
-        true;
-    else
-        false;
-    fi
-    blast_cache_dir="blast_hits_cache-$taxgroup.$VERSION"
-    blast_cache_dir_scratch="$blast_cache_dir.scratch"
+    set_variables "$taxgroup_production_dir"
     mkdir -p "$blast_cache_dir_scratch"
     pushd "$blast_cache_dir_scratch"
         #
@@ -85,13 +95,13 @@ for taxgroup_production_dir in $fastaroot/*/production; do
     popd
 done
 wait
+fi
+
 #
 #   Step 2. Store BLAST alignments in SQLITE3 database
 #
 for taxgroup_production_dir in $fastaroot/*/production; do
-    taxgroup=$(dirname taxgroup_production_dir | xargs basename)
-    blast_cache_dir="blast_hits_cache-$taxgroup.$VERSION"
-    blast_cache_dir_scratch="$blast_cache_dir.scratch"
+    set_variables "$taxgroup_production_dir"
     pushd "$blast_cache_dir_scratch"
         "$sdir/create.cache.sh"  >& create.cache.log &
     popd
@@ -101,9 +111,7 @@ wait
 #   Step 3. Copy files to final directory
 #
 for taxgroup_production_dir in $fastaroot/*/production; do
-    taxgroup=$(dirname taxgroup_production_dir | xargs basename)
-    blast_cache_dir="blast_hits_cache-$taxgroup.$VERSION"
-    blast_cache_dir_scratch="$blast_cache_dir.scratch"
+    set_variables "$taxgroup_production_dir"
     mkdir -p "$blast_cache_dir"
     cp "$blast_cache_dir_scratch"/{blast_hits.sqlite,genus-list} "$blast_cache_dir"/ &
 done
