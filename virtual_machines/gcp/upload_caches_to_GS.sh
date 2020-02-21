@@ -9,4 +9,9 @@ set -euxo pipefail
 
 project="$1"; shift
 bucket="$1"; shift
+read VERSION < VERSION
+
+gcloud auth activate-service-account --project="$project" --key-file=/panfs/pan1/gpipe/etc/.gpipe_gcp/"$project"-*.json
+
+gcp -m scp -r blast_hits_cache-*.$VERSION gs://"$bucket"/
 
