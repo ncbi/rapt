@@ -42,7 +42,7 @@
                 "sudo dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo",
                 "sudo dnf update -y",
                 "sudo dnf install -y --nobest python3-devel python3-virtualenv python3-requests docker-ce docker-ce-cli containerd.io tmux gcc nodejs git-core boost boost-devel boost-static zlib-devel",
-                "sudo dnf group install 'Development Tools'",
+                "sudo dnf group install -y 'Development Tools'",
                 "git clone https://github.com/ncbi/SKESA",
                 "cd SKESA && make BOOST_LIB='-L /usr/lib64' && cd $HOME",
                 "sudo systemctl disable firewalld",
