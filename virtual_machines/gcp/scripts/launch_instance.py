@@ -1,6 +1,7 @@
 #!/bin/env python3
 
 import sys
+import os
 import json
 import random
 import libcloud
@@ -36,21 +37,22 @@ class gcp_control:
         image = (gcp.list_images(filters=[branch])[0]).name
         return image
             
-    def get_metadata(self, name):
+    def get_metadata(self, name, filename):
         startup_script = open("pgap_startup.py", "r").read()
+        acc = os.path.splitext(filename)[0]
         metadata = {
             'items': [
                 {
                     'key': 'accession',
-                    'value': "SAMN13012271-rid8503733"
+                    'value': acc
                 },
                 {
                     'key': 'input',
-                    'value': "gs://pgap_input/SAMN13012271-rid8503733.asnt"
+                    'value': "gs://pgap_input/" + filename
                 },
                 {
                     'key': 'output',
-                    'value' : f"gs://pgap_results/SAMN13012271-rid8503733-{name}.tgz"
+                    'value' : f"gs://pgap_results/{acc}-{name}.tgz"
                 },
                 {
                     'key': 'taxid',
@@ -85,6 +87,7 @@ class gcp_control:
     
     def launch_image(self,
                      node_name,
+                     filename,
                      zone,
                      image_name,
                      machine_type,
@@ -94,7 +97,7 @@ class gcp_control:
         print(f"Launching a {machine_type} instance based on {image_name}, in zone {zone.name}")
 
         scopes = [ "https://www.googleapis.com/auth/cloud-platform" ]
-        metadata=self.get_metadata(node_name)
+        metadata=self.get_metadata(node_name, filename)
         
         try:
             node = self.driver.create_node(node_name,
@@ -123,7 +126,7 @@ class gcp_control:
             
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print(f"Usage: {sys.argv[0]} <instance_name>")
+        print(f"Usage: {sys.argv[0]} <instance_name> <assembly file>")
         sys.exit(0)
 
     authfile = "/panfs/pan1/gpipe/etc/.gpipe_gcp/ncbi-pgapx-f16c4ab8be62.json"
@@ -138,6 +141,6 @@ if __name__ == "__main__":
     with open('pgap_settings.json') as jf:
         recs = json.load(jf)
 
-    r = gcp.launch_image(sys.argv[1], zone, image_name,
-                         recs["machine_type"], recs["disk_type"])
+    r = gcp.launch_image(sys.argv[1], sys.argv[2], zone, image_name,
+                         recs["machine_type"], recs["disk_type"], preemptible=False)
     print(r)
