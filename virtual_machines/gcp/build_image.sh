@@ -1,10 +1,7 @@
 #!/bin/bash
 
 branch="release"
-version=$( curl -s https://api.github.com/repos/ncbi/pgap/releases/latest | grep \"name\" | cut -d\" -f4 )
-
-#branch="test"
-#version="2019-10-29.build4114"
+version="$1"; shift
 
 buildname=$( echo "$version-$branch" | tr "." "-" )
 
