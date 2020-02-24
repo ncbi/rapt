@@ -17,7 +17,11 @@ pids=
 for files_from in files-from.*.list; do
     (
         package=$(echo "$files_from" | perl -pe 's{files-from\.}{}; s{\.list}{}' )
-        tarfile=${inputdir}.${PGAP_BUILD_TYPE}."$package".tgz
+        if [ "$package" = "pgap" ]; then
+            tarfile=${inputdir}.${PGAP_BUILD_TYPE}.tgz
+        else
+            tarfile=${inputdir}.${PGAP_BUILD_TYPE}."$package".tgz
+        fi
         tar cvzf ${tarfile}  --mode='u+w' --files-from <(
             cat "$files_from" |
             grep -vP '^#'  | 
