@@ -13,6 +13,7 @@ set -euxo pipefail
 #   The TC build configurator should include VCS gpipe-teamcity for this to work
 #
 source ./teamcity-utils.sh
+source ./mywait.sh
 function set_variables() 
 {
     taxgroup_production_dir="$1";
@@ -67,6 +68,8 @@ fastaroot=/panfs/pan1.be-md.ncbi.nlm.nih.gov/gpipe/ThirdParty/ExternalData/Bacte
 taxgroup=
 blast_cache_dir=
 blast_cache_dir_scratch=
+pids=$(pwd)/pids.$$
+rm -f $pids
 if true; then
 for taxgroup_production_dir in $fastaroot/*/production; do
     set_variables "$taxgroup_production_dir"
@@ -92,9 +95,10 @@ for taxgroup_production_dir in $fastaroot/*/production; do
         # submit BLAST jobs via gpipe system on the farm
         #
         "$sdir/fasta2cache.sh" "$unicoll_version" >& fasta2cache.log &
+        echo $! >> $pids
     popd
 done
-wait
+time mywait $pids
 fi
 
 #

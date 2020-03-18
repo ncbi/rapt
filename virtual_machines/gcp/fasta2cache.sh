@@ -5,6 +5,7 @@
 #
 
 set -euxo pipefail
+sdir=$(dirname $(readlink -f "$0"))
 unicoll_version="$1" ;shift # example: "2019-09-28T10:21:57"
 blastdb_mft=blastdb.mft
 #
@@ -15,6 +16,9 @@ blastdb_mft=blastdb.mft
 GP_ep=badrazat
 GP_HOME=/panfs/pan1.be-md.ncbi.nlm.nih.gov/gpipe/home/badrazat/local-install/current
 GP_SQL_SRVR=$("$GP_HOME"/bin/gp_sh "$GP_ep" "$GP_HOME"/bin/gp_get_attr GP_SQL_SRVR)
+source "$sdir/mywait.sh"
+pids=$(pwd)/pids.$$
+rm -f $pids
 
 if true; then
     for type in O P; do
@@ -26,8 +30,9 @@ if true; then
         -o "$type.protein.asn" \
         -nogenbank \
         -oseqids "$type".seqids >& "$type".protein_extract.log &
+        echo $! >> $pids
     done
-    wait
+    mywait $pids
     # for type in O P; do
         # sqlite3 "$type".LDS "update file set file_name= '$type.protein.asn'"
     # done
@@ -142,9 +147,10 @@ for type in O P; do
     #   GOOOOOOOOOOOOOOOOOOOOOOOOOOOO!
     #
     "$GP_HOME"/bin/gp_sh "$GP_ep" "$GP_HOME"/bin/gp_build_start "$br" >& gp_build_start."$type"."$br".log &
+    echo $! >> $pids
     echo "$br" > "$type.br"
 done
-time wait
+time mywait $pids
 #
 #   create symlinks for BLAST output
 #
