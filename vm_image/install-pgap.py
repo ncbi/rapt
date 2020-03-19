@@ -28,7 +28,14 @@ subprocess.run(["sudo", "rm", "-rf", ".docker"], check=True)
 
 # Get input data
 if is_release:
-    url=f"https://s3.amazonaws.com/pgap/input-{version}.pgap.tgz"
+    url=f"https://s3.amazonaws.com/pgap/input-{version}.tgz"
 else:
-    url=f"https://s3.amazonaws.com/pgap/input-{version}.{branch}.pgap.tgz"
+    url=f"https://s3.amazonaws.com/pgap/input-{version}.{branch}.tgz.tgz"
+subprocess.run([f"curl -s {url} | tar xvzf -"], shell=True, check=True)
+
+# Get ANI data
+if is_release:
+    url=f"https://s3.amazonaws.com/pgap/input-{version}.ani.tgz"
+else:
+    url=f"https://s3.amazonaws.com/pgap/input-{version}.{branch}.ani.tgz"
 subprocess.run([f"curl -s {url} | tar xvzf -"], shell=True, check=True)
