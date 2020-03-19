@@ -45,10 +45,10 @@
                 "sudo yum install -y python36 python36-devel python36-pip python36-virtualenv python36-setuptools python36-requests docker-ce docker-ce-cli containerd.io htop tmux chrony gcc nodejs git-core nano tree",
                 "sudo pip3 install jupyter",
                 "sudo setcap 'cap_net_bind_service=+ep' /usr/bin/python3.6",
-                "#sudo systemctl disable firewalld",
+                "sudo systemctl disable firewalld",
                 "sudo systemctl enable docker",
                 "sudo systemctl start docker",
-                "sudo chkconfig chronyd on",
+                "sudo systemctl enable chronyd",
                 "sudo ln -sf /usr/share/zoneinfo/America/New_York /etc/localtime",
                 "sudo sh -c 'echo -e \"ZONE=/usr/share/zoneinfo/America/New_York\nUTC=true\" > /etc/sysconfig/clock'",
                 "echo \"net.ipv4.ip_forward=1\" | sudo tee -a /etc/sysctl.conf > /dev/null",
@@ -78,10 +78,10 @@
             "type": "shell",
             "environment_vars": [ "PATH=/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin" ],
             "inline": [
-                "docker pull ncbi/skesa:v2.3.0",
-                "chmod +x install-pgap.py",
-                "./install-pgap.py {{user `version`}} {{user `branch`}}",
-                "rm install-pgap.py"
+                "#docker pull ncbi/skesa:v2.3.0",
+                "#chmod +x install-pgap.py",
+                "#./install-pgap.py {{user `version`}} {{user `branch`}}",
+                "#rm install-pgap.py"
             ]
         }
     ]
