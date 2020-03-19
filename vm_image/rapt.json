@@ -38,16 +38,11 @@
                 "sleep 30",
                 "set -o verbose",
                 "sudo dnf install -y yum-utils device-mapper-persistent-data lvm2",
-                "#sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo",
                 "sudo dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo",
                 "sudo dnf update -y",
-                "sudo dnf install -y --nobest python3-devel python3-virtualenv python3-requests docker-ce docker-ce-cli containerd.io tmux gcc nodejs git-core boost boost-devel boost-static zlib-devel nano tree kernel-headers-$(uname -r)",
-                "sudo dnf group install -y 'Development Tools'",
+                "sudo dnf install -y --nobest python3-devel python3-virtualenv python3-requests docker-ce docker-ce-cli containerd.io tmux gcc nodejs git-core nano tree",
                 "sudo pip3 install jupyter",
-                "#sudo firewall-cmd --add-port=8080/tcp --permanent",
                 "sudo setcap 'cap_net_bind_service=+ep' /usr/libexec/platform-python3.6",
-                "git clone https://github.com/ncbi/SKESA",
-                "cd SKESA && make BOOST_LIB='-L /usr/lib64' && cd $HOME",
                 "sudo systemctl disable firewalld",
                 "sudo systemctl enable --now docker",
                 "sudo ln -sf /usr/share/zoneinfo/America/New_York /etc/localtime",
@@ -81,6 +76,7 @@
             "inline": [
                 "chmod +x install-pgap.py",
                 "./install-pgap.py {{user `version`}} {{user `branch`}}",
+                "docker pull ncbi/skesa:v2.3.0",
                 "rm install-pgap.py"
             ]
         }
