@@ -9,13 +9,22 @@ hints:
 inputs:
   reads:
     type:
-      type: array
+      type: array?
       items: File
       inputBinding:
 	prefix: --reads
       	separate: false
     inputBinding:
       position: 1
+  sra_run:
+    type:
+      type: array?
+      items: string
+      inputBinding:
+	prefix: --sra_run
+	separate: false
+    inputBinding:
+      position: 2
   contigs_out_name:
     type: string?
     default: contigs.out
