@@ -29,7 +29,7 @@
         },
         {
             "type": "file",
-            "source": "install-pgap.py",
+            "source": "install-rapt.py",
             "destination": "/home/rapt/"
         },
         {
@@ -77,10 +77,9 @@
             "type": "shell",
             "environment_vars": [ "PATH=/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin" ],
             "inline": [
-                "sudo docker pull ncbi/skesa:v2.3.0",
-                "chmod +x install-pgap.py",
-                "./install-pgap.py {{user `version`}} {{user `branch`}}",
-                "rm install-pgap.py"
+                "chmod +x install-rapt.py",
+                "./install-rapt.py {{user `version`}} {{user `branch`}}",
+                "rm install-rapt.py"
             ]
         }
     ]

@@ -24,7 +24,11 @@ else:
     repo=f"pgap-{branch}"
 image=f"ncbi/{repo}:{version}"
 subprocess.run(["sudo", "docker", "pull", "-q", image], check=True)
+subprocess.run(["sudo", "docker", "pull", "-q", "ncbi/skesa:v2.3.0"], check=True)
 subprocess.run(["sudo", "rm", "-rf", ".docker"], check=True)
+
+
+
 
 # Get input data
 if is_release:
