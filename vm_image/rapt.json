@@ -65,7 +65,6 @@
                 "sudo chmod 750 /etc/google-fluentd/config.d",
                 "sudo find /etc/google-fluentd/config.d -type f -exec chmod 640 {} +",
                 "sudo groupadd gpipe-sudoers",
-                "sudo groupadd -f docker",
                 "echo '%gpipe-sudoers ALL=(ALL:ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/gpipe_sudoers > /dev/null",
                 "sudo usermod -a -G docker,gpipe-sudoers rapt",
                 "newgrp docker",
@@ -78,10 +77,10 @@
             "type": "shell",
             "environment_vars": [ "PATH=/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin" ],
             "inline": [
-                "#docker pull ncbi/skesa:v2.3.0",
-                "#chmod +x install-pgap.py",
-                "#./install-pgap.py {{user `version`}} {{user `branch`}}",
-                "#rm install-pgap.py"
+                "sudo docker pull ncbi/skesa:v2.3.0",
+                "chmod +x install-pgap.py",
+                "./install-pgap.py {{user `version`}} {{user `branch`}}",
+                "rm install-pgap.py"
             ]
         }
     ]
