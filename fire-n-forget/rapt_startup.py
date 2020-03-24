@@ -9,10 +9,10 @@ import requests
 import subprocess
 import uuid
 
-class pgap_control:
+class rapt_control:
 
     def __init__(self):
-        self.home_dir = os.path.expanduser('~pgap')
+        self.home_dir = os.path.expanduser('~rapt')
         self.work_dir = f"{self.home_dir}/work"
         self.debug_dir = f"{self.work_dir}/debug"
         self.blast_cache_dir = f"{self.home_dir}/blast_hits_cache"
@@ -128,8 +128,8 @@ def main():
     p.chmod(0o666)
 
     # GCP startup scripts default to running as root
-    # So let's change to the pgap user
-    p = pwd.getpwnam('pgap')
+    # So let's change to the rapt user
+    p = pwd.getpwnam('rapt')
     os.initgroups(p.pw_name, p.pw_gid)
     os.setgid(p.pw_gid)
     os.setuid(p.pw_uid)
@@ -138,21 +138,21 @@ def main():
     os.environ['NCBI_CONFIG__GENBANK__PREOPEN'] = 'false'
 
     # Run the pipeline
-    pgap = pgap_control()
+    rapt = rapt_control()
 
-    if pgap.has_run():
+    if rapt.has_run():
         atexit.unregister(shutdown) # In this case, we don't want to kill the instance
         print("Work products exist, exiting startup script")
         sys.exit(0)
 
     try:
-        pgap.setup()
-        pgap.run_cwl()
+        rapt.setup()
+        rapt.run_cwl()
     except subprocess.CalledProcessError as err:
         print(f"Failed Command: {err.cmd}, Returned: {err.returncode}")
         print(f"Stderr: {err.stderr.decode('utf-8')}")
     finally:
-        pgap.upload_results()
+        rapt.upload_results()
 
 # These functions are hidden down here because
 # they contain giant strings and are ugly
@@ -261,8 +261,8 @@ xpath_fail_final_asnvalidate: >
 
 if __name__ == "__main__":
     # Add the two obscured functions to the class
-    setattr(pgap_control, "write_submol", write_submol)
-    setattr(pgap_control, "write_input_yaml", write_input_yaml)
+    setattr(rapt_control, "write_submol", write_submol)
+    setattr(rapt_control, "write_input_yaml", write_input_yaml)
     main()
 
 
