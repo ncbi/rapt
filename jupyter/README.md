@@ -27,23 +27,20 @@ If you are not running Jupyter on your localhost, then accessing the server secu
 
 ```bash
 ~$ ssh -L localhost:8888:localhost:8888 <remote host>
-~$ jupyter-notebook --no-browser
-[I 23:11:21.695 NotebookApp] Writing notebook server cookie secret to /home/user/.local/share/jupyter/runtime/notebook_cookie_secret
-[I 23:11:21.835 NotebookApp] Serving notebooks from local directory: /home/user
-[I 23:11:21.835 NotebookApp] The Jupyter Notebook is running at:
-[I 23:11:21.835 NotebookApp] http://localhost:8888/?token=28bcb0c90e6407acb3b2533123c28b2925706f638deef638
-[I 23:11:21.835 NotebookApp]  or http://127.0.0.1:8888/?token=28bcb0c90e6407acb3b2533123c28b2925706f638deef638
-[I 23:11:21.835 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
-[C 23:11:21.837 NotebookApp]
-
-    To access the notebook, open this file in a browser:
-        file:///home/user/.local/share/jupyter/runtime/nbserver-1955-open.html
-    Or copy and paste one of these URLs:
-        http://localhost:8888/?token=28bcb0c90e6407acb3b2533123c28b2925706f638deef638
-     or http://127.0.0.1:8888/?token=28bcb0c90e6407acb3b2533123c28b2925706f638deef638
+[remote host]~$ jupyter-notebook --no-browser
 ```
 
-If you copy and paster the line that begins with "http://localhost:8888/?token=" into your favorite web browser, you should have access to the remote Jupyter server.
+If you copy and paste the line that begins with "http://localhost:8888/?token=" into your favorite web browser, you should have access to the remote Jupyter server.
 
 ### Connecting to a remote Google Cloud Instance
 
+Note that the following is supported under Linux, OSX, and Windows. To install the Google Cloud SDK, see https://cloud.google.com/storage/docs/gsutil_install
+
+If you have not yet configured your setup, use `gcloud init` to authenticate, and set your default project.
+
+```bash
+~$ gcloud compute ssh <instance name> --ssh-flag="-L localhost:8888:localhost:8888"
+[remote host]~$ jupyter-notebook --no-browser
+```
+
+Note that you might need the project flag (`--project <project-name>`) if it is different from your default project.
