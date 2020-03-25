@@ -12,3 +12,7 @@ packer build \
        -var "version=$version" \
        -var "buildname=$buildname" \
        rapt.json
+
+# The following gcloud command sets the image created above to be public
+# Need to get the image name first before this can be used
+# gcloud compute images add-iam-policy-binding image-name --member='allAuthenticatedUsers' --role='roles/compute.imageUser'
