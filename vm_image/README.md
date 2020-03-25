@@ -1,20 +1,13 @@
 # RAPT base image
 
-# Using the Jupyter Notebook
+## Requirements
 
-Start the image on your cloud provider and open up a port for Jupyter
+* packer
+* Python 3
+* apache libcloud Python library
+* A JSON file containing the the service account authorization
 
-## Google Cloud Platform
+## Usage
 
-(Based upon project)
-
-gcloud compute --project=ncbi-rapt firewall-rules create allow-jupyter-8080 --description="Allow access to a Jupyter notebook running on port 8080 " --direction=INGRESS --priority=1000 --network=default --action=ALLOW --rules=tcp:8080 --source-ranges=0.0.0.0/0
-
-## AWS
-
-TBD
-
-
-## Start the Jupyter Notebook
-
-jupyter-notebook --no-browser --ip=* --port=8080
+1. Build the image using the `build_image.sh` script
+2. Test the image using the `launch_image.py` script
