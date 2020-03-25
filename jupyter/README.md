@@ -5,7 +5,7 @@ This Jupyter notebook is intended to show you how to run RAPT on your own machin
 ## Requirements
 To run the PGAP pipeline you will need:
 
-* Python (version 3.5 or higher),
+* Python (version 3.6 or higher),
 * the ability to run Docker (see https://docs.docker.com/install/ if it is not already installed),
 * about 100GB of storage for the supplemental data and working space,
 * and 2GB-4GB of memory available per CPU used by your container.
