@@ -81,7 +81,7 @@
                 "chmod +x install-rapt.py",
                 "./install-rapt.py {{user `version`}} {{user `branch`}}",
                 "rm install-rapt.py",
-                "curl -OL https://github.com/ncbi/rapt/raw/jupyter/RAPT.ipynb"
+                "curl -OL https://github.com/ncbi/rapt/raw/master/jupyter/RAPT.ipynb"
             ]
         }
     ]
