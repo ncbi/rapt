@@ -7,6 +7,8 @@ version=sys.argv[1]
 branch=sys.argv[2]
 is_release=branch not in ["dev", "test", "prod"]
 
+os.umask(0o002)
+
 # Get CWL code
 if is_release:
     os.makedirs("cwl", exist_ok=True)
@@ -26,9 +28,6 @@ image=f"ncbi/{repo}:{version}"
 subprocess.run(["sudo", "docker", "pull", "-q", image], check=True)
 subprocess.run(["sudo", "docker", "pull", "-q", "ncbi/skesa:v2.3.0"], check=True)
 subprocess.run(["sudo", "rm", "-rf", ".docker"], check=True)
-
-
-
 
 # Get input data
 if is_release:
