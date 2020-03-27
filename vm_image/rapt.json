@@ -78,7 +78,7 @@
             "type": "shell",
             "environment_vars": [ "PATH=/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin" ],
             "inline": [
-                "chmod 755 $HOME"
+                "chmod 755 $HOME",
                 "chmod +x install-rapt.py",
                 "./install-rapt.py {{user `version`}} {{user `branch`}}",
                 "rm install-rapt.py",
