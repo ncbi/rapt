@@ -44,6 +44,7 @@
                 "sudo yum erase -y ntp* yum-cron",
                 "sudo yum install -y python36 python36-devel python36-pip python36-virtualenv python36-setuptools python36-requests docker-ce docker-ce-cli containerd.io htop tmux chrony gcc nodejs git-core nano tree",
                 "sudo pip3 install jupyter bash_kernel",
+                "sudo python3 -m bash_kernel.install",
                 "#sudo setcap 'cap_net_bind_service=+ep' /usr/bin/python3.6",
                 "#sudo systemctl disable firewalld",
                 "sudo systemctl enable docker",
