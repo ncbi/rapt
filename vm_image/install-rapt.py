@@ -19,6 +19,8 @@ if is_release:
 else:
     subprocess.run(["git", "clone", "--branch", branch, "https://github.com/ncbi/pgap.git", "cwl"], check=True)
 
+subprocess.run(["ln", "-s", "cwl/scripts/pgap.py"], check=True)
+    
 # Get Docker image
 if is_release:
     repo="pgap-utils"
