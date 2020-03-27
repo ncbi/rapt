@@ -110,4 +110,4 @@ if __name__ == "__main__":
     print(r)
     print("\nCheck that you have the correct authorization set with 'gcloud auth list'.")
     print("You can connect to this instance using the following command:")
-    print(f'  gcloud compute ssh {node_name} --ssh-flag="-L localhost:8888:localhost:8888" --project {gcp.project}')
+    print(f'  gcloud compute ssh rapt@{node_name} --ssh-flag="-L localhost:8888:localhost:8888" --project {gcp.project}')
