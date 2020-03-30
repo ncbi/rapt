@@ -36,3 +36,7 @@ url=f"https://s3.amazonaws.com/pgap/input-{version}.ani.tgz"
 subprocess.run([f"curl -s {url} | tar xvzf -"], shell=True, check=True)
 open(f'input-{version}/.ani_complete', 'a').close()
 
+# Create Version file
+filename = "VERSION"
+with open(filename, 'w', encoding='utf-8') as f:
+    f.write(u'{}\n'.format(version))
