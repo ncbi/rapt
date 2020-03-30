@@ -14,7 +14,7 @@ subprocess.run(["curl", "-sLO", remote_file], check=True)
 subprocess.run(["tar", "xvzf", version, "-C", "cwl", "--strip-components=1"], check=True)
 os.remove(version)
 
-subprocess.run(["ln", "-s", "cwl/scripts/pgap.py"], check=True)
+subprocess.run(["cp", "cwl/scripts/pgap.py", "."], check=True)
     
 # Get PGAP docker images
 repos = [ "pgap-utils" , "pgap" ]
