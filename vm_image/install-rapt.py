@@ -15,6 +15,7 @@ subprocess.run(["tar", "xvzf", version, "-C", "cwl", "--strip-components=1"], ch
 os.remove(version)
 
 subprocess.run(["curl", "-OL", "https://github.com/ncbi/pgap/raw/prod/scripts/pgap.py"], check=True)
+subprocess.run(["chmod", "+x", "pgap.py"], check=True)
     
 # Get PGAP docker images
 repos = [ "pgap-utils" , "pgap" ]
