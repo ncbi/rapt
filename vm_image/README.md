@@ -27,7 +27,7 @@ You can test the image using the script:
 $ launch_image.py <instance name>
 ```
 
-provided you have installed the _libcloud_ python package. We recommend using a virtual environment. To access the image:
+provided you have installed the _libcloud_ python package. The script will always launch the latest version of the image. We recommend using a virtual environment. To access the image:
 
 ```
 $ gcloud compute ssh rapt@<instance name> --ssh-flag="-L localhost:8888:localhost:8888"
