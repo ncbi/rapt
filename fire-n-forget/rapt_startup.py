@@ -31,6 +31,7 @@ class rapt_control:
         self.get_dockerimage()
         self.fetch_input()
         self.fetch_blast_cache()
+        self.write_uuid()
         self.write_submol()
         self.write_input_yaml()
 
@@ -55,10 +56,18 @@ class rapt_control:
         self.docker_image = r.stdout.strip()
 
     def fetch_input(self):
-        url = self.attributes['input']
-        self.inputfile = os.path.basename(url)
-        cmd = ["gsutil", "cp", "-r", url, self.work_dir]
-        r = subprocess.run(cmd, stderr=subprocess.PIPE, check=True)
+        if "input" in self.attributes:
+            url = self.attributes['input']
+            self.skesa_inputfile = os.path.basename(url)
+            cmd = ["gsutil", "cp", "-r", url, self.work_dir]
+            r = subprocess.run(cmd, stderr=subprocess.PIPE, check=True)
+        elif "url" in self.attributes:
+            url = self.attributes['url']
+            self.skesa_inputfile = os.path.basename(url)
+            cmd = [f"curl -L {url} > {skesa_inputfile}", self.work_dir]
+            r = subprocess.run(cmd, shell=True, stderr=subprocess.PIPE, check=True)
+        elif "sra_id" in self.attributes:
+            self.skesa_inputfile = self.attributes['sra_id']
 
     def fetch_blast_cache(self):
         if "blast_cache" in self.attributes and "taxgroup" in self.attributes:
@@ -72,6 +81,16 @@ class rapt_control:
                 print(f"Failed Command: {err.cmd}")
                 print(f"Stderr: {err.stderr.decode('utf-8')}")
                 self.has_blast_cache = False
+
+    def write_uuid(self):
+        cmd = f"uuidgen > {self.work_dir}/uuid.txt"
+        subprocess.run(cmd, shell=True, stdout=sys.stdout, stderr=sys.stderr)
+
+    def run_skesa():
+        pass
+
+    def run_ani():
+        pass
 
     def run_cwl(self):
         os.chdir(self.work_dir)
@@ -147,6 +166,8 @@ def main():
 
     try:
         rapt.setup()
+        rapt.run_skesa()
+        rapt.run_ani()
         rapt.run_cwl()
     except subprocess.CalledProcessError as err:
         print(f"Failed Command: {err.cmd}, Returned: {err.returncode}")
@@ -211,6 +232,9 @@ supplemental_data:
 submol_block_json:
     class: File
     location: submol.json
+uuid_in:
+    class: File
+    location: uuid.txt
 go:
     - true
 contact_as_author_possible: false
