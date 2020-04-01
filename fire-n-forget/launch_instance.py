@@ -36,16 +36,9 @@ class gcp_control:
         image = (gcp.list_images(filters=[branch])[0]).name
         return image
 
-    def set_metadata(self, settings):
-        #startup_script = open("rapt_startup.py", "r").read()
-        startup_script = "placeholder"
+    def set_metadata(self, settings, name):
         self.metadata = {
-            'items': [
-                {
-                    'key': 'startup-script',
-                    'value': startup_script
-                }
-            ]
+            'items': [ ]
         }
         for k in settings:
             self.metadata['items'].append(
@@ -54,7 +47,20 @@ class gcp_control:
                         'value': settings[k]
                     }
                 )
-
+        self.metadata['items'].append(
+            {
+                'key': 'output',
+                'value': f'gs://rapt_results/{name}.tgz'
+            }
+        )
+        #startup_script = open("rapt_startup.py", "r").read()
+        startup_script = "placeholder"
+        self.metadata['items'].append(
+            {
+                'key': 'startup-script',
+                'value': startup_script
+            }
+        )
             
     def get_metadata(self):
         # startup_script = open("rapt_startup.py", "r").read()
@@ -157,12 +163,13 @@ if __name__ == "__main__":
 
     zone = gcp.get_random_zone()
     image_name=gcp.get_latest_image()
-    with open('sys.argv[1]') as jf:
-        recs = json.load(jf)
+    with open(sys.argv[1]) as jf:
+        settings = json.load(jf)
 
-    gcp.set_metadata(recs)
+    instance_name = sys.argv[1].partition('.')[0]
+    gcp.set_metadata(settings, instance_name)
     print(gcp.get_metadata())
     sys.exit(0)
-    r = gcp.launch_image(sys.argv[1], zone, image_name,
+    r = gcp.launch_image(instance_name, zone, image_name,
                          machine_type, disk_type)
     print(r)
