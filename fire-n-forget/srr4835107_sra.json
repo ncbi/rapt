@@ -1,0 +1,9 @@
+{
+    "accession": "SRR4835107",
+    "sra_id": "SRR4835107",
+    "genus_species": "Salmonella enterica",
+    "topology": "linear",
+    "bioproject": "PRJNA316728",
+    "biosample": "SAMN04160831",
+    "debug": "false"
+}

@@ -143,7 +143,7 @@ class gcp_control:
             
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print(f"Usage: {sys.argv[0]} <instance_name>")
+        print(f"Usage: {sys.argv[0]} <filename.json>")
         sys.exit(0)
 
     authfile = "rapt-gcp-auth.json"
@@ -157,7 +157,7 @@ if __name__ == "__main__":
 
     zone = gcp.get_random_zone()
     image_name=gcp.get_latest_image()
-    with open('rapt_settings.json') as jf:
+    with open('sys.argv[1]') as jf:
         recs = json.load(jf)
 
     gcp.set_metadata(recs)
