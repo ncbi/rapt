@@ -140,6 +140,9 @@ if __name__ == "__main__":
     with open('rapt_settings.json') as jf:
         recs = json.load(jf)
 
+    for rec in recs:
+        print(rec)
+    sys.exit(0)
     r = gcp.launch_image(sys.argv[1], zone, image_name,
                          machine_type, disk_type)
     print(r)
