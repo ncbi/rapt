@@ -37,24 +37,22 @@ class gcp_control:
         return image
 
     def set_metadata(self, settings, name):
-        self.metadata = {
-            'items': [ ]
-        }
+        self.metadata = { 'items': [ ] }
+
         for k in settings:
             self.metadata['items'].append(
-                    {
-                        'key': k,
-                        'value': settings[k]
-                    }
-                )
+                {
+                    'key': k,
+                    'value': settings[k]
+                }
+            )
         self.metadata['items'].append(
             {
                 'key': 'output',
                 'value': f'gs://rapt_results/{name}.tgz'
             }
         )
-        #startup_script = open("rapt_startup.py", "r").read()
-        startup_script = "placeholder"
+        startup_script = open("rapt_startup.py", "r").read()
         self.metadata['items'].append(
             {
                 'key': 'startup-script',
@@ -63,44 +61,6 @@ class gcp_control:
         )
             
     def get_metadata(self):
-        # startup_script = open("rapt_startup.py", "r").read()
-        # metadata = {
-        #     'items': [
-        #         {
-        #             'key': 'accession',
-        #             'value': "SAMN13012271-rid8503733"
-        #         },
-        #         {
-        #             'key': 'input',
-        #             'value': "gs://rapt_input/SAMN13012271-rid8503733.asnt"
-        #         },
-        #         {
-        #             'key': 'output',
-        #             'value' : f"gs://rapt_results/SAMN13012271-rid8503733-{name}.tgz"
-        #         },
-        #         {
-        #             'key': 'taxid',
-        #             'value': "440524"
-        #         },
-        #         {
-        #             'key': 'taxgroup',
-        #             'value' : "2"
-        #         },
-        #         {
-        #             'key': 'blast_cache',
-        #             'value' : "gs://rapt_cache"
-        #         },
-        #         {
-        #             'key': 'debug',
-        #             'value': False
-        #         },
-        #         {
-        #             'key': 'startup-script',
-        #             'value': startup_script
-        #         }
-        #     ]
-        # }
-        #metadata['items'].pop() # remove startup script for debugging 
         return self.metadata
 
     def get_random_zone(self):
