@@ -128,8 +128,7 @@ if __name__ == "__main__":
 
     instance_name = sys.argv[1].partition('.')[0]
     gcp.set_metadata(settings, instance_name)
-    print(gcp.get_metadata())
-    sys.exit(0)
+
     r = gcp.launch_image(instance_name, zone, image_name,
                          machine_type, disk_type)
     print(r)
