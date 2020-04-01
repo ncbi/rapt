@@ -35,47 +35,67 @@ class gcp_control:
     def get_latest_image(self, branch="release"):
         image = (gcp.list_images(filters=[branch])[0]).name
         return image
-            
-    def get_metadata(self, name):
-        startup_script = open("rapt_startup.py", "r").read()
-        metadata = {
+
+    def set_metadata(self, settings):
+        #startup_script = open("rapt_startup.py", "r").read()
+        startup_script = "placeholder"
+        self.metadata = {
             'items': [
-                {
-                    'key': 'accession',
-                    'value': "SAMN13012271-rid8503733"
-                },
-                {
-                    'key': 'input',
-                    'value': "gs://rapt_input/SAMN13012271-rid8503733.asnt"
-                },
-                {
-                    'key': 'output',
-                    'value' : f"gs://rapt_results/SAMN13012271-rid8503733-{name}.tgz"
-                },
-                {
-                    'key': 'taxid',
-                    'value': "440524"
-                },
-                {
-                    'key': 'taxgroup',
-                    'value' : "2"
-                },
-                {
-                    'key': 'blast_cache',
-                    'value' : "gs://rapt_cache"
-                },
-                {
-                    'key': 'debug',
-                    'value': False
-                },
                 {
                     'key': 'startup-script',
                     'value': startup_script
                 }
             ]
         }
+        for k in settings:
+            self.metadata['items'].append(
+                    {
+                        'key': k,
+                        'value': settings[k]
+                    }
+                )
+
+            
+    def get_metadata(self):
+        # startup_script = open("rapt_startup.py", "r").read()
+        # metadata = {
+        #     'items': [
+        #         {
+        #             'key': 'accession',
+        #             'value': "SAMN13012271-rid8503733"
+        #         },
+        #         {
+        #             'key': 'input',
+        #             'value': "gs://rapt_input/SAMN13012271-rid8503733.asnt"
+        #         },
+        #         {
+        #             'key': 'output',
+        #             'value' : f"gs://rapt_results/SAMN13012271-rid8503733-{name}.tgz"
+        #         },
+        #         {
+        #             'key': 'taxid',
+        #             'value': "440524"
+        #         },
+        #         {
+        #             'key': 'taxgroup',
+        #             'value' : "2"
+        #         },
+        #         {
+        #             'key': 'blast_cache',
+        #             'value' : "gs://rapt_cache"
+        #         },
+        #         {
+        #             'key': 'debug',
+        #             'value': False
+        #         },
+        #         {
+        #             'key': 'startup-script',
+        #             'value': startup_script
+        #         }
+        #     ]
+        # }
         #metadata['items'].pop() # remove startup script for debugging 
-        return metadata
+        return self.metadata
 
     def get_random_zone(self):
         zones = [ zone for zone in self.driver.zone_list if
@@ -126,7 +146,7 @@ if __name__ == "__main__":
         print(f"Usage: {sys.argv[0]} <instance_name>")
         sys.exit(0)
 
-    authfile = "rapt_auth.json"
+    authfile = "rapt-gcp-auth.json"
     machine_type = "n1-standard-8"
     disk_type = "pd-standard"
 
@@ -140,8 +160,8 @@ if __name__ == "__main__":
     with open('rapt_settings.json') as jf:
         recs = json.load(jf)
 
-    for rec in recs:
-        print(rec)
+    gcp.set_metadata(recs)
+    print(gcp.get_metadata())
     sys.exit(0)
     r = gcp.launch_image(sys.argv[1], zone, image_name,
                          machine_type, disk_type)
