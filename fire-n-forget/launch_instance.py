@@ -127,6 +127,8 @@ if __name__ == "__main__":
         sys.exit(0)
 
     authfile = "rapt_auth.json"
+    machine_type = "n1-standard-8"
+    disk_type = "pd-standard"
 
     with open(authfile) as f:
         auth = json.load(f)
@@ -139,5 +141,5 @@ if __name__ == "__main__":
         recs = json.load(jf)
 
     r = gcp.launch_image(sys.argv[1], zone, image_name,
-                         recs["machine_type"], recs["disk_type"])
+                         machine_type, disk_type)
     print(r)
