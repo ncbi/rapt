@@ -46,4 +46,4 @@ with open(filename, 'w', encoding='utf-8') as f:
 # This is a hack because taxcheck is not public yet, change this when the issue is resolved
 subprocess.run([f"sudo docker run --rm ncbi/pgap:{version} tar cf - taxcheck | tar xvf -"], shell=True, check=True)
 subprocess.run([f"sudo chown -R rapt:rapt taxcheck"], shell=True, check=True)
-subprocess.run(["mv", "cwl", "cwl_taxcheck"], check=True)
+subprocess.run(["mv", "taxcheck", "cwl_taxcheck"], check=True)
