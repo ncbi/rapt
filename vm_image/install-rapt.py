@@ -11,7 +11,8 @@ os.umask(0o002)
 os.makedirs("cwl", exist_ok=True)
 remote_file=f"https://api.github.com/repos/ncbi/pgap/tarball/{version}"
 subprocess.run(["curl", "-sLO", remote_file], check=True)
-subprocess.run(["tar", "xvzf", version, "-C", "pgap", "--strip-components=1"], check=True)
+subprocess.run(["tar", "xvzf", version, "-C", "cwl", "--strip-components=1"], check=True)
+subprocess.run(["mv", "cwl", "cwl_pgap"], check=True)
 os.remove(version)
 
 subprocess.run(["curl", "-OL", "https://github.com/ncbi/pgap/raw/prod/scripts/pgap.py"], check=True)
@@ -45,3 +46,4 @@ with open(filename, 'w', encoding='utf-8') as f:
 # This is a hack because taxcheck is not public yet, change this when the issue is resolved
 subprocess.run([f"sudo docker run --rm ncbi/pgap:{version} tar cf - taxcheck | tar xvf -"], shell=True, check=True)
 subprocess.run([f"sudo chown -R rapt:rapt taxcheck"], shell=True, check=True)
+subprocess.run(["mv", "cwl", "cwl_taxcheck"], check=True)
