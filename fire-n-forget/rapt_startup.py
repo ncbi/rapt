@@ -99,7 +99,35 @@ class rapt_control:
         cmd = f"docker run --rm ncbi/skesa:v2.3.0 skesa {opt} {self.skesa_inputfile} > {self.inputfile}"
 
     def run_ani():
-        pass
+        return # This is not ready yet.
+        os.chdir(self.work_dir)
+        defaults = [
+            "/usr/local/bin/cwltool",
+            "--default-container", self.docker_image,
+            "--timestamps",
+            "--preserve-entire-environment",
+            "--disable-color",
+            "--outdir", "output"
+        ]
+        inputs = [
+            f"{self.home_dir}/taxcheck/ani.cwl", "input.yaml"
+        ]
+        debug_options = [
+            "--tmpdir-prefix", "debug/tmpdir/",
+            "--leave-tmpdir",
+            "--tmp-outdir-prefix", "debug/tmp-outdir/",
+            "--copy-outputs",
+            "--debug"
+        ]
+        logging = [ "|& tee debug/cwltool.log | grep '^\[' > /var/log/cwltool.log"]
+
+        if self.debug:
+            defaults += debug_options
+        cmdlist = defaults + inputs + logging
+        cmd = " ".join(cmdlist)
+
+        print(cmd)
+        r = subprocess.run(cmd, stdout=sys.stdout, shell=True, check=True, env=os.environ)
 
     def run_cwl(self):
         os.chdir(self.work_dir)
@@ -112,7 +140,7 @@ class rapt_control:
             "--outdir", "output"
         ]
         inputs = [
-            f"{self.home_dir}/cwl/wf_common.cwl", "input.yaml"
+            f"{self.home_dir}/cwl/pgap.cwl", "input.yaml"
         ]
         debug_options = [
             "--tmpdir-prefix", "debug/tmpdir/",
@@ -145,9 +173,9 @@ class rapt_control:
         cmd = ["gsutil", "cp", "-r", tarfile, url]
         r = subprocess.run(cmd, stdout=sys.stdout, stderr=sys.stderr)
 
-@atexit.register
-def shutdown():
-    os.system("/usr/bin/sudo /usr/sbin/shutdown -h now")
+#@atexit.register
+#def shutdown():
+#    os.system("/usr/bin/sudo /usr/sbin/shutdown -h now")
 
 def main():
     # Ensure we can write to log, while we are still root
@@ -176,8 +204,8 @@ def main():
     try:
         rapt.setup()
         rapt.run_skesa()
-        rapt.run_ani()
-        rapt.run_cwl()
+        #rapt.run_ani()
+        #rapt.run_cwl()
     except subprocess.CalledProcessError as err:
         print(f"Failed Command: {err.cmd}, Returned: {err.returncode}")
         print(f"Stderr: {err.stderr.decode('utf-8')}")
