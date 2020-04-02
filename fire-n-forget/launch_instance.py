@@ -80,7 +80,7 @@ class gcp_control:
         print(f"Launching a {machine_type} instance based on {image_name}, in zone {zone.name}")
 
         scopes = [ "https://www.googleapis.com/auth/cloud-platform" ]
-        metadata=self.get_metadata(node_name)
+        metadata=self.get_metadata()
         
         try:
             node = self.driver.create_node(node_name,
