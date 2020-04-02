@@ -20,6 +20,7 @@ class rapt_control:
         self.url = "http://metadata/computeMetadata/v1/instance/"
         self.debug = False
         self.has_blast_cache = False
+        self.has_sra_id = False
 
     def has_run(self):
         return os.path.exists(self.work_dir)
@@ -87,7 +88,15 @@ class rapt_control:
         subprocess.run(cmd, shell=True, stdout=sys.stdout, stderr=sys.stderr)
 
     def run_skesa():
-        pass
+        self.inputfile = f"{self.skesa_inputfile}.skesa.fa"
+        os.chdir(self.work_dir)
+
+        if self.has_sra_id:
+            opt = f"--sra_run "
+        else:
+            opt = f"--reads"
+
+        cmd = f"docker run --rm ncbi/skesa:v2.3.0 skesa {opt} {self.skesa_inputfile} > {self.inputfile}"
 
     def run_ani():
         pass
