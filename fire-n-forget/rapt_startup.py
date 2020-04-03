@@ -100,7 +100,7 @@ class rapt_control:
 
         cmd = f"docker run --rm ncbi/skesa:v2.3.0 skesa {opt} {self.skesa_inputfile} > {self.inputfile}"
         with open(f"{self.work_dir}/debug/cwltool.log", 'a') as cwllog:
-            cwllog.write(cmd + "\n")
+            cwllog.write("Running SKESA command:\n" + cmd + "\n")
             r = subprocess.run(cmd, stderr=cwllog, stdout=sys.stdout, shell=True, check=True)
 
     def run_ani(self):
@@ -131,7 +131,7 @@ class rapt_control:
         cmd = " ".join(cmdlist)
 
         with open(f"{self.work_dir}/debug/cwltool.log", 'a') as cwllog:
-            cwllog.write(cmd + "\n")
+            cwllog.write("Running TAXCHECK command:\n" + cmd + "\n")
             r = subprocess.run(cmd, stderr=cwllog, stdout=sys.stdout, shell=True, check=True, env=os.environ)
 
     def run_cwl(self):
@@ -162,7 +162,7 @@ class rapt_control:
         cmd = " ".join(cmdlist)
 
         with open(f"{self.work_dir}/debug/cwltool.log", 'a') as cwllog:
-            cwllog.write(cmd + "\n")
+            cwllog.write("Running PGAP command:\n" + cmd + "\n")
             r = subprocess.run(cmd, stderr=cwllog, stdout=sys.stdout, shell=True, check=True, env=os.environ)
 
     def upload_results(self):
