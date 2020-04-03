@@ -5,5 +5,5 @@
     "topology": "linear",
     "bioproject": "PRJNA316728",
     "biosample": "SAMN04160831",
-    "debug": "false"
+    "debug": "true"
 }

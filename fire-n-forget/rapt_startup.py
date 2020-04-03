@@ -98,6 +98,9 @@ class rapt_control:
             opt = f"--reads"
 
         cmd = f"docker run --rm ncbi/skesa:v2.3.0 skesa {opt} {self.skesa_inputfile} > {self.inputfile}"
+        print(cmd)
+        with open(f"{self.work_dir}/debug/cwltool.log", 'w') as cwllog:
+            r = subprocess.run(cmd, stderr=cwllog, stdout=sys.stdout, shell=True, check=True)
 
     def run_ani(self):
         return # This is not ready yet.
@@ -120,7 +123,7 @@ class rapt_control:
             "--copy-outputs",
             "--debug"
         ]
-        logging = [ "|& tee debug/cwltool.log | grep '^\[' >> /var/log/cwltool.log"]
+        logging = [ "|& tee -a debug/cwltool.log | grep '^\[' >> /var/log/cwltool.log"]
 
         if self.debug:
             defaults += debug_options
@@ -150,7 +153,7 @@ class rapt_control:
             "--copy-outputs",
             "--debug"
         ]
-        logging = [ "|& tee debug/cwltool.log | grep '^\[' >> /var/log/cwltool.log"]
+        logging = [ "|& tee -a debug/cwltool.log | grep '^\[' >> /var/log/cwltool.log"]
 
         if self.debug:
             defaults += debug_options
