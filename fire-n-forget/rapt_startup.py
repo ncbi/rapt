@@ -262,14 +262,13 @@ authors:
     f.close()
 
 def write_input_yaml(self):
-    text = f"""entries:
+    text = f"""fasta:
     class: File
     location: {self.inputfile}
-gc_assm_name: {self.attributes['accession']}
 supplemental_data:
     class: Directory
     location: {self.input_dir}
-submol_block_json:
+submol:
     class: File
     location: submol.yaml
 uuid_in:
@@ -279,7 +278,7 @@ go:
     - true
 contact_as_author_possible: false
 ignore_all_errors: true
-report_usage: false
+report_usage: true
 """
     if "taxid" in self.attributes:
         text = text + "taxid: {self.attributes['taxid']}\n"
