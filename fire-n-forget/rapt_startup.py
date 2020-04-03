@@ -217,35 +217,37 @@ def main():
 # You're welcome
 
 def write_submol(self):
-    text = """{
-   "authors" : [
-      {
-         "author" : {
-            "middle_initial" : "T",
-            "last_name" : "Schwarzenegger",
-            "first_name" : "Arnold"
-         }
-      },
-      {
-         "author" : {
-            "last_name" : "Hamilton",
-            "first_name" : "Linda"
-         }
-      }
-   ],
-   "contact_info" : {
-      "country" : "Lappland",
-      "department" : "Department of Using NCBI",
-      "street" : "1234 Main St",
-      "phone" : "301-555-0245",
-      "last_name" : "Doe",
-      "email" : "jane_doe@gmail.com",
-      "city" : "Docker",
-      "postal_code" : "12345",
-      "organization" : "NCBI",
-      "first_name" : "Jane"
-   }
-}
+    text = """contact_info:
+    last_name: 'Doe'
+    first_name: 'Jane'
+    email: 'jane_doe@gmail.com'
+    organization: 'Institute of Klebsiella foobarensis research'
+    department: 'Department of Using NCBI'
+    phone: '301-555-0245'
+    street: '1234 Main St'
+    city: 'Docker'
+    postal_code: '12345'
+    country: 'Lappland'
+    
+authors:
+    - author:
+        first_name: 'Arnold'
+        last_name: 'Schwarzenegger'
+        middle_initial: 'T'
+    - author:
+        first_name: 'Linda'
+        last_name: 'Hamilton'
+"""
+    if "bioproject" in self.attributes:
+        text = text + "bioproject: {self.attributes['bioproject']}\n"
+    if "biosample" in self.attributes:
+        text = text + "biosample: {self.attributes['biosample']}\n"
+    if "topology" in self.attributes:
+        text = text + "topology: {self.attributes['topology']}\n"
+    if "genus_species" in self.attributes:
+        text = text + f"""organism:
+    genus_species: {self.attributes['genus_species']}
+    strain: 'replaceme'
 """
     f = open(f"{self.work_dir}/submol.json", "w")
     f.write(text)
@@ -273,13 +275,6 @@ report_usage: false
 """
     if "taxid" in self.attributes:
         text = text + "taxid: {self.attributes['taxid']}\n"
-    if "topology" in self.attributes:
-        text = text + "topology: {self.attributes['topology']}\n"
-    if "genus_species" in self.attributes:
-        text = text + f"""organism:
-    genus_species: {self.attributes['genus_species']}
-    strain: 'replaceme'
-"""
     if self.has_blast_cache:
         text = text + f"""blast_hits_cache_data:
     class: Directory
