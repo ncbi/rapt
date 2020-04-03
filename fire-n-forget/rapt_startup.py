@@ -27,6 +27,7 @@ class rapt_control:
 
     def setup(self):
         os.makedirs(self.debug_dir, exist_ok=True)
+        os.makedirs(f"{self.work_dir}/output", exist_ok=True)
         self.get_metadata()
         self.get_version()
         self.get_dockerimage()
@@ -166,8 +167,10 @@ class rapt_control:
     def upload_results(self):
         tarlist = "output"
         if self.debug:
+            os.rename(f"{self.inputfile}", "debug/{self.inputfile}")
+            os.rename("uuid.txt", "debug/uuid.txt")
             os.rename("input.yaml", "debug/input.yaml")
-            os.rename("submol.json", "debug/submol.json")
+            os.rename("submol.yaml", "debug/submol.yaml")
             tarlist += " debug"
         tarfile = str(uuid.uuid4())
         cmd = f"tar cvzf {tarfile} {tarlist}"
@@ -253,7 +256,7 @@ authors:
     genus_species: {self.attributes['genus_species']}
     strain: 'replaceme'
 """
-    f = open(f"{self.work_dir}/submol.json", "w")
+    f = open(f"{self.work_dir}/submol.yaml", "w")
     f.write(text)
     f.close()
 
@@ -267,7 +270,7 @@ supplemental_data:
     location: {self.input_dir}
 submol_block_json:
     class: File
-    location: submol.json
+    location: submol.yaml
 uuid_in:
     class: File
     location: uuid.txt
