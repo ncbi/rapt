@@ -99,8 +99,8 @@ class rapt_control:
             opt = f"--reads"
 
         cmd = f"docker run --rm ncbi/skesa:v2.3.0 skesa {opt} {self.skesa_inputfile} > {self.inputfile}"
-        print(cmd)
-        with open(f"{self.work_dir}/debug/cwltool.log", 'w') as cwllog:
+        with open(f"{self.work_dir}/debug/cwltool.log", 'a') as cwllog:
+            cwllog.write(cmd + "\n")
             r = subprocess.run(cmd, stderr=cwllog, stdout=sys.stdout, shell=True, check=True)
 
     def run_ani(self):
@@ -131,8 +131,9 @@ class rapt_control:
         cmdlist = defaults + inputs + logging
         cmd = " ".join(cmdlist)
 
-        print(cmd)
-        r = subprocess.run(cmd, stdout=sys.stdout, shell=True, check=True, env=os.environ)
+        with open(f"{self.work_dir}/debug/cwltool.log", 'a') as cwllog:
+            cwllog.write(cmd + "\n")
+            r = subprocess.run(cmd, stderr=cwllog, stdout=sys.stdout, shell=True, check=True, env=os.environ)
 
     def run_cwl(self):
         os.chdir(self.work_dir)
@@ -161,8 +162,9 @@ class rapt_control:
         cmdlist = defaults + inputs + logging
         cmd = " ".join(cmdlist)
 
-        print(cmd)
-        r = subprocess.run(cmd, stdout=sys.stdout, shell=True, check=True, env=os.environ)
+        with open(f"{self.work_dir}/debug/cwltool.log", 'a') as cwllog:
+            cwllog.write(cmd + "\n")
+            r = subprocess.run(cmd, stderr=cwllog, stdout=sys.stdout, shell=True, check=True, env=os.environ)
 
     def upload_results(self):
         tarlist = "output"
@@ -211,7 +213,7 @@ def main():
     try:
         rapt.setup()
         rapt.run_skesa()
-        #rapt.run_ani()
+        rapt.run_ani()
         #rapt.run_cwl()
     except subprocess.CalledProcessError as err:
         print(f"Failed Command: {err.cmd}, Returned: {err.returncode}")
