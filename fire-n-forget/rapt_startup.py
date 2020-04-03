@@ -252,12 +252,6 @@ def write_submol(self):
     f.close()
 
 def write_input_yaml(self):
-    blast_cache=""
-    if self.has_blast_cache:
-        blast_cache=f"""blast_hits_cache_data:
-    class: Directory
-    location: {self.blast_cache_dir}
-"""
     text = f"""entries:
     class: File
     location: {self.inputfile}
@@ -276,47 +270,21 @@ go:
 contact_as_author_possible: false
 ignore_all_errors: true
 report_usage: false
-{blast_cache}
-xpath_fail_initial_asndisc: >
-    //*[@severity="FATAL"
-        and not(contains(@name, "CITSUBAFFIL_CONFLICT"))
-    ]
-xpath_fail_initial_asnvalidate: >
-    //*[( @severity="ERROR" or @severity="REJECT" )
-        and not(contains(@code, "GENERIC_MissingPubRequirement"))
-        and not(contains(@code, "SEQ_DESCR_BacteriaMissingSourceQualifier"))
-        and not(contains(@code, "SEQ_DESCR_ChromosomeLocation"))
-        and not(contains(@code, "SEQ_DESCR_MissingLineage"))
-        and not(contains(@code, "SEQ_DESCR_NoTaxonID"))
-        and not(contains(@code, "SEQ_DESCR_UnwantedCompleteFlag"))
-        and not(contains(@code, "SEQ_FEAT_ShortIntron"))
-        and not(contains(@code, "SEQ_INST_InternalNsInSeqRaw"))
-        and not(contains(@code, "SEQ_INST_ProteinsHaveGeneralID"))
-        and not(contains(@code, "SEQ_PKG_ComponentMissingTitle"))
-        and not(contains(@code, "SEQ_PKG_NucProtProblem"))
-    ]
-xpath_fail_final_asndisc: >
-    //*[@severity="FATAL"
-        and not(contains(@name, "CITSUBAFFIL_CONFLICT"))
-    ]
-xpath_fail_final_asnvalidate: >
-    //*[( @severity="ERROR" or @severity="REJECT" )
-        and not(contains(@code, "GENERIC_MissingPubRequirement"))
-        and not(contains(@code, "SEQ_DESCR_BacteriaMissingSourceQualifier"))
-        and not(contains(@code, "SEQ_DESCR_ChromosomeLocation"))
-        and not(contains(@code, "SEQ_DESCR_MissingLineage"))
-        and not(contains(@code, "SEQ_DESCR_NoTaxonID"))
-        and not(contains(@code, "SEQ_DESCR_UnwantedCompleteFlag"))
-        and not(contains(@code, "SEQ_FEAT_ShortIntron"))
-        and not(contains(@code, "SEQ_INST_InternalNsInSeqRaw"))
-        and not(contains(@code, "SEQ_INST_ProteinsHaveGeneralID"))
-        and not(contains(@code, "SEQ_PKG_ComponentMissingTitle"))
-        and not(contains(@code, "SEQ_PKG_NucProtProblem"))
-    ]
 """
     if "taxid" in self.attributes:
         text = text + "taxid: {self.attributes['taxid']}\n"
-
+    if "topology" in self.attributes:
+        text = text + "topology: {self.attributes['topology']}\n"
+    if "genus_species" in self.attributes:
+        text = text + f"""organism:
+    genus_species: {self.attributes['genus_species']}
+    strain: 'replaceme'
+"""
+    if self.has_blast_cache:
+        text = text + f"""blast_hits_cache_data:
+    class: Directory
+    location: {self.blast_cache_dir}
+"""
     f = open(f"{self.work_dir}/input.yaml", "w")
     f.write(text)
     f.close()
