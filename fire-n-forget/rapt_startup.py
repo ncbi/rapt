@@ -104,7 +104,6 @@ class rapt_control:
             r = subprocess.run(cmd, stderr=cwllog, stdout=sys.stdout, shell=True, check=True)
 
     def run_ani(self):
-        return # This is not ready yet.
         os.chdir(self.work_dir)
         defaults = [
             "/usr/local/bin/cwltool",
@@ -118,9 +117,9 @@ class rapt_control:
             f"{self.home_dir}/cwl_taxcheck/ani.cwl", "input.yaml"
         ]
         debug_options = [
-            "--tmpdir-prefix", "debug/tmpdir/",
+            "--tmpdir-prefix", "debug/ani-tmpdir/",
             "--leave-tmpdir",
-            "--tmp-outdir-prefix", "debug/tmp-outdir/",
+            "--tmp-outdir-prefix", "debug/ani-tmp-outdir/",
             "--copy-outputs",
             "--debug"
         ]
@@ -149,9 +148,9 @@ class rapt_control:
             f"{self.home_dir}/cwl_pgap/pgap.cwl", "input.yaml"
         ]
         debug_options = [
-            "--tmpdir-prefix", "debug/tmpdir/",
+            "--tmpdir-prefix", "debug/pgap-tmpdir/",
             "--leave-tmpdir",
-            "--tmp-outdir-prefix", "debug/tmp-outdir/",
+            "--tmp-outdir-prefix", "debug/pgap-tmp-outdir/",
             "--copy-outputs",
             "--debug"
         ]
