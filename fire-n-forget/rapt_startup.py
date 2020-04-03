@@ -69,6 +69,7 @@ class rapt_control:
             r = subprocess.run(cmd, shell=True, stderr=subprocess.PIPE, check=True)
         elif "sra_id" in self.attributes:
             self.skesa_inputfile = self.attributes['sra_id']
+            self.has_sra_id = True
         self.inputfile = f"{self.skesa_inputfile}.skesa.fa"
 
     def fetch_blast_cache(self):
