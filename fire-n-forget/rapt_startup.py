@@ -181,9 +181,9 @@ class rapt_control:
         cmd = ["gsutil", "cp", "-r", tarfile, url]
         r = subprocess.run(cmd, stdout=sys.stdout, stderr=sys.stderr)
 
-#@atexit.register
-#def shutdown():
-#    os.system("/usr/bin/sudo /usr/sbin/shutdown -h now")
+@atexit.register
+def shutdown():
+    os.system("/usr/bin/sudo /usr/sbin/shutdown -h now")
 
 def main():
     # Ensure we can write to log, while we are still root
