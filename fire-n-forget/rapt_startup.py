@@ -114,7 +114,7 @@ class rapt_control:
             "--outdir", "output"
         ]
         inputs = [
-            f"{self.home_dir}/cwl_taxcheck/ani.cwl", "input.yaml"
+            f"{self.home_dir}/cwl_taxcheck/taxcheck.cwl", "input.yaml"
         ]
         debug_options = [
             "--tmpdir-prefix", "debug/ani-tmpdir/",
