@@ -247,11 +247,11 @@ authors:
         last_name: 'Hamilton'
 """
     if "bioproject" in self.attributes:
-        text = text + "bioproject: {self.attributes['bioproject']}\n"
+        text = text + f"bioproject: {self.attributes['bioproject']}\n"
     if "biosample" in self.attributes:
-        text = text + "biosample: {self.attributes['biosample']}\n"
+        text = text + f"biosample: {self.attributes['biosample']}\n"
     if "topology" in self.attributes:
-        text = text + "topology: {self.attributes['topology']}\n"
+        text = text + f"topology: {self.attributes['topology']}\n"
     if "genus_species" in self.attributes:
         text = text + f"""organism:
     genus_species: {self.attributes['genus_species']}
@@ -281,7 +281,7 @@ ignore_all_errors: true
 report_usage: true
 """
     if "taxid" in self.attributes:
-        text = text + "taxid: {self.attributes['taxid']}\n"
+        text = text + f"taxid: {self.attributes['taxid']}\n"
     if self.has_blast_cache:
         text = text + f"""blast_hits_cache_data:
     class: Directory
