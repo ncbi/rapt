@@ -167,7 +167,7 @@ class rapt_control:
     def upload_results(self):
         tarlist = "output"
         if self.debug:
-            os.rename(f"{self.inputfile}", "debug/{self.inputfile}")
+            os.rename(f"{self.inputfile}", f"debug/{self.inputfile}")
             os.rename("uuid.txt", "debug/uuid.txt")
             os.rename("input.yaml", "debug/input.yaml")
             os.rename("submol.yaml", "debug/submol.yaml")
