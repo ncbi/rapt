@@ -88,7 +88,7 @@ class rapt_control:
         cmd = f"uuidgen > {self.work_dir}/uuid.txt"
         subprocess.run(cmd, shell=True, stdout=sys.stdout, stderr=sys.stderr)
 
-    def run_skesa():
+    def run_skesa(self):
         os.chdir(self.work_dir)
 
         if self.has_sra_id:
@@ -98,7 +98,7 @@ class rapt_control:
 
         cmd = f"docker run --rm ncbi/skesa:v2.3.0 skesa {opt} {self.skesa_inputfile} > {self.inputfile}"
 
-    def run_ani():
+    def run_ani(self):
         return # This is not ready yet.
         os.chdir(self.work_dir)
         defaults = [
@@ -261,7 +261,6 @@ def write_input_yaml(self):
     text = f"""entries:
     class: File
     location: {self.inputfile}
-taxid: {self.attributes['taxid']}
 gc_assm_name: {self.attributes['accession']}
 supplemental_data:
     class: Directory
@@ -315,6 +314,9 @@ xpath_fail_final_asnvalidate: >
         and not(contains(@code, "SEQ_PKG_NucProtProblem"))
     ]
 """
+    if "taxid" in self.attributes:
+        text = text + "taxid: {self.attributes['taxid']}\n"
+
     f = open(f"{self.work_dir}/input.yaml", "w")
     f.write(text)
     f.close()
