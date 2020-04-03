@@ -130,5 +130,5 @@ if __name__ == "__main__":
     gcp.set_metadata(settings, instance_name)
 
     r = gcp.launch_image(instance_name, zone, image_name,
-                         machine_type, disk_type)
+                         machine_type, disk_type, preemptible=False)
     print(r)
