@@ -213,7 +213,7 @@ def main():
         rapt.setup()
         rapt.run_skesa()
         rapt.run_ani()
-        #rapt.run_cwl()
+        rapt.run_cwl()
     except subprocess.CalledProcessError as err:
         print(f"Failed Command: {err.cmd}, Returned: {err.returncode}")
         print(f"Stderr: {err.stderr.decode('utf-8')}")
