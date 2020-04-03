@@ -110,7 +110,7 @@ class rapt_control:
             "--outdir", "output"
         ]
         inputs = [
-            f"{self.home_dir}/taxcheck/ani.cwl", "input.yaml"
+            f"{self.home_dir}/cwl_taxcheck/ani.cwl", "input.yaml"
         ]
         debug_options = [
             "--tmpdir-prefix", "debug/tmpdir/",
@@ -119,7 +119,7 @@ class rapt_control:
             "--copy-outputs",
             "--debug"
         ]
-        logging = [ "|& tee debug/cwltool.log | grep '^\[' > /var/log/cwltool.log"]
+        logging = [ "|& tee debug/cwltool.log | grep '^\[' >> /var/log/cwltool.log"]
 
         if self.debug:
             defaults += debug_options
@@ -140,7 +140,7 @@ class rapt_control:
             "--outdir", "output"
         ]
         inputs = [
-            f"{self.home_dir}/cwl/pgap.cwl", "input.yaml"
+            f"{self.home_dir}/cwl_pgap/pgap.cwl", "input.yaml"
         ]
         debug_options = [
             "--tmpdir-prefix", "debug/tmpdir/",
@@ -149,7 +149,7 @@ class rapt_control:
             "--copy-outputs",
             "--debug"
         ]
-        logging = [ "|& tee debug/cwltool.log | grep '^\[' > /var/log/cwltool.log"]
+        logging = [ "|& tee debug/cwltool.log | grep '^\[' >> /var/log/cwltool.log"]
 
         if self.debug:
             defaults += debug_options
