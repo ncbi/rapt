@@ -58,7 +58,7 @@ class rapt_control:
         self.docker_image = r.stdout.strip()
 
     def fetch_input(self):
-        if "input" in self.attributes:
+        if "gcpstorage" in self.attributes:
             url = self.attributes['input']
             self.skesa_inputfile = os.path.basename(url)
             cmd = ["gsutil", "cp", "-r", url, self.work_dir]
