@@ -130,9 +130,9 @@ class rapt_control:
         cmdlist = defaults + inputs + logging
         cmd = " ".join(cmdlist)
 
-        with open(f"{self.work_dir}/debug/cwltool.log", 'a') as cwllog:
-            cwllog.write("Running TAXCHECK command:\n" + cmd + "\n")
-            r = subprocess.run(cmd, stderr=cwllog, stdout=sys.stdout, shell=True, check=True, env=os.environ)
+        with open(f"{self.work_dir}/debug/cwltool_stderr.log", 'a') as cwl_stderr:
+            cwl_stderr.write("Running TAXCHECK command:\n" + cmd + "\n")
+            r = subprocess.run(cmd, stderr=cwl_stderr, stdout=sys.stdout, shell=True, check=True, env=os.environ)
 
     def run_cwl(self):
         os.chdir(self.work_dir)
@@ -161,9 +161,9 @@ class rapt_control:
         cmdlist = defaults + inputs + logging
         cmd = " ".join(cmdlist)
 
-        with open(f"{self.work_dir}/debug/cwltool.log", 'a') as cwllog:
-            cwllog.write("Running PGAP command:\n" + cmd + "\n")
-            r = subprocess.run(cmd, stderr=cwllog, stdout=sys.stdout, shell=True, check=True, env=os.environ)
+        with open(f"{self.work_dir}/debug/cwltool_stderr.log", 'a') as cwl_stderr:
+            cwl_stderr.write("Running PGAP command:\n" + cmd + "\n")
+            r = subprocess.run(cmd, stderr=cwl_stderr, stdout=sys.stdout, shell=True, check=True, env=os.environ)
 
     def upload_results(self):
         tarlist = "output"
