@@ -58,12 +58,12 @@ class rapt_control:
         self.docker_image = r.stdout.strip()
 
     def fetch_input(self):
-        if "gcpstorage" in self.attributes:
+        if "gcp_storage" in self.attributes:
             url = self.attributes['input']
             self.skesa_inputfile = os.path.basename(url)
             cmd = ["gsutil", "cp", "-r", url, self.work_dir]
             r = subprocess.run(cmd, stderr=subprocess.PIPE, check=True)
-        elif "url" in self.attributes:
+        elif "fasta_url" in self.attributes:
             url = self.attributes['url']
             self.skesa_inputfile = os.path.basename(url)
             cmd = [f"curl -L {url} > {skesa_inputfile}", self.work_dir]
