@@ -60,6 +60,7 @@ COPY binaries/bin ${GP_HOME}/third-party/bin
 COPY package.versions ${GP_HOME}/third-party/
 COPY binaries/bin/* ${GP_HOME}/bin/
 COPY scripts/* ${bindir}/
+COPY skesa ${GP_HOME}/third-party/bin
 #COPY binaries/tRNAscan-SE /panfs/pan1.be-md.ncbi.nlm.nih.gov/gpipe/ThirdParty/tRNAscan-SE
 
 COPY ncbirc /netopt/ncbi_tools64/.ncbirc
