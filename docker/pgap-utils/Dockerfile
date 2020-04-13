@@ -11,9 +11,13 @@ ARG ncbi_crisper_version
 USER root
 WORKDIR /root
 COPY --chown=root:root etc /etc
-#
-#  cyrus-sasl-devel hoping it will install old version of SASL that kmer executables need.
-# 
+
+RUN echo "ip_resolve=4" >> /etc/yum.conf
+RUN yum -y update && yum -y install yum-utils && yum -y groupinstall development
+RUN yum -y install https://centos7.iuscommunity.org/ius-release.rpm
+#RUN yum -y install http://dl.iuscommunity.org/pub/ius/stable/CentOS/7/x86_64/ius-release-1.0-13.ius.centos7.noarch.rpm
+RUN yum -y install python36u python36u-pip python36u-devel nodejs
+
 RUN yum -y install binutils perl sqlite ncbi-crispr${ncbi_crisper_version} nodejs ncbi-gcc730-opt-libs  ncbi-gcc493-opt-libs PyYAML
 RUN ln -s /usr/bin/perl /usr/bin/perl5.16 \
     && ln -s /usr/bin/perl /opt/perl/5.16.3/bin/perl \
