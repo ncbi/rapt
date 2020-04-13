@@ -157,7 +157,7 @@ mkdir $input/GeneMark
 #   heuristically get the version from that source file,
 #   but reliance on heuristic is not really better than relying on hardcoded version
 #
-genemark_version=ver2.110_114
+genemark_version=API_2.2
 source_genemark_location="$third_party_binary_source/GeneMark/$genemark_version"
 actual_genemark_version=$(readlink -f "$source_genemark_location" | 
     perl -pe 's{^.*ThirdParty/GeneMark/}{}g')
