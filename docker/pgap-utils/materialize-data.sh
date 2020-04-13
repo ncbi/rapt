@@ -13,6 +13,13 @@ output=input-${VERSION}
 ##
 rm -f $input/uniColl_path/Naming.fa # 4Gb shaved off
 rm -rf $output
+#
+#   remove self-links. 
+#       1/ At this point we possess them as part of local input-links structure (not as part of link to global third party directory where we cannot and should not edit anything)
+#       2/ We are also not relying on their existence, since we resolved first round of self-reference
+#       in fetch-data.shaved
+#
+find "$input/" -type l | xargs ls -ld | grep -Poh '\S+ \-\> \.$' | cut -f1 -d' ' | xargs rm 
 
 cp -rL $input $output
 #
