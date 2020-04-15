@@ -22,7 +22,10 @@
 #
 # ===========================================================================
 
-BOOST_PATH := /netopt/ncbi_tools64/boost-1.62.0-ncbi1
+# BOOST_PATH := /netopt/ncbi_tools64/boost-1.62.0-ncbi1
+# VDB_PATH := /net/snowman/vol/projects/trace_software/vdb/vdb-versions/2.10.5
+# NGS_PATH := /net/snowman/vol/projects/trace_software/ngs/ngs-versions/2.10.5
+
 GCC_VERSION := 7.3.0
 GCC_BIN := /opt/ncbi/gcc/$(GCC_VERSION)/bin
 BOOST_TAG := -gcc73-mt
@@ -33,11 +36,9 @@ BOOST_INCPATH := -I$(BOOST_PATH)/include
 BOOST_LIBPATH := -L$(BOOST_PATH)/lib
 endif
 
-VDB_PATH := /net/snowman/vol/projects/trace_software/vdb/vdb-versions/2.10.5
 VDB_INCPATH := -I$(VDB_PATH)/interfaces
 VDB_LIBPATH := -L$(VDB_PATH)/linux/release/x86_64/lib
 
-NGS_PATH := /net/snowman/vol/projects/trace_software/ngs/ngs-versions/2.10.5
 NGS_INCPATH := -I$(NGS_PATH)/include
 NGS_LIBPATH := -L$(NGS_PATH)/linux/release/x86_64/lib
 
