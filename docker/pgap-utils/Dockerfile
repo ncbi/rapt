@@ -66,6 +66,8 @@ COPY binaries/bin/* ${GP_HOME}/bin/
 COPY scripts/* ${bindir}/
 COPY skesa ${GP_HOME}/third-party/bin
 RUN chmod +x ${GP_HOME}/third-party/bin/skesa
+# Temporary hack to fix the broken teamcity build
+COPY hack_libs/* /lib64/
 #COPY binaries/tRNAscan-SE /panfs/pan1.be-md.ncbi.nlm.nih.gov/gpipe/ThirdParty/tRNAscan-SE
 
 COPY ncbirc /netopt/ncbi_tools64/.ncbirc
