@@ -1,0 +1,25 @@
+steps:
+- name: "gcr.io/cloud-builders/docker"
+  args: [
+    "build",
+    "--tag",
+    "us.gcr.io/$PROJECT_ID/${_PATH}${_NAME}:${_TAG}",
+    "--tag",
+    "us.gcr.io/$PROJECT_ID/${_PATH}${_NAME}:${_BRANCH}",
+    "."
+  ]
+
+substitutions:
+  _TAG:
+  _BRANCH:
+  _PATH:
+  _NAME:
+
+tags:
+- '${_NAME}'
+- '${_TAG}'
+- '${_BRANCH}'
+
+images:
+- 'us.gcr.io/${PROJECT_ID}/${_PATH}${_NAME}:${_TAG}'
+- 'us.gcr.io/${PROJECT_ID}/${_PATH}${_NAME}:${_BRANCH}'

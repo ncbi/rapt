@@ -1,0 +1,40 @@
+[NCBI]
+FileAPIHonorUmask = true
+;; MemorySizeLimit = 70%
+
+
+[EXCEPTION]
+Stack_Trace_Level = Error
+
+
+[LOG]
+LogEnvironment=GP_SQL_SRVR GP_build GP_buildrun GP_taskrun
+PerfLogging=true
+TryRootLogFirst=false
+File="ncbiapp.log"
+
+
+;; Logging at Info severity (for applog; see [DIAG] section).
+[DEBUG]
+DIAG_POST_LEVEL=Info
+Trace_Fatal_Signals=true
+Catch_Unhandled_Exceptions=false
+
+
+;; Applog logging to log files (if specified)
+;; with human-friendly log to console only at Warning severity.
+[DIAG]
+OLD_POST_FORMAT=false
+TEE_TO_STDERR=true
+TEE_MIN_SEVERITY=Warning
+AppLog_Rate_Limit=4000000000
+AppLog_Rate_Period=1
+
+
+;; Applog merge lines.
+[CGI]
+Merge_Log_Lines=true 
+
+
+[GENBANK]
+preopen=false 
