@@ -23,6 +23,10 @@
 # ===========================================================================
 
 BOOST_PATH := /netopt/ncbi_tools64/boost-1.62.0-ncbi1
+VDB_PATH := /net/snowman/vol/projects/trace_software/vdb/vdb-versions/2.10.5
+NGS_PATH := /net/snowman/vol/projects/trace_software/ngs/ngs-versions/2.10.5
+
+
 GCC_VERSION := 7.3.0
 GCC_BIN := /opt/ncbi/gcc/$(GCC_VERSION)/bin
 BOOST_TAG := -gcc73-mt
@@ -33,13 +37,13 @@ BOOST_INCPATH := -I$(BOOST_PATH)/include
 BOOST_LIBPATH := -L$(BOOST_PATH)/lib
 endif
 
-VDB_PATH := /net/snowman/vol/projects/trace_software/vdb/vdb-versions/2.10.5
 VDB_INCPATH := -I$(VDB_PATH)/interfaces
-VDB_LIBPATH := -L$(VDB_PATH)/linux/release/x86_64/lib
+VDB_LINUXPATH := $(VDB_PATH)/linux/release/x86_64
+VDB_LIBPATH := -L$(VDB_LINUXPATH)/lib
 
-NGS_PATH := /net/snowman/vol/projects/trace_software/ngs/ngs-versions/2.10.5
 NGS_INCPATH := -I$(NGS_PATH)/include
-NGS_LIBPATH := -L$(NGS_PATH)/linux/release/x86_64/lib
+NGS_LINUXPATH := $(NGS_PATH)/linux/release/x86_64
+NGS_LIBPATH := -L$(NGS_LINUXPATH)/lib
 
 
 CC = $(GCC_BIN)/g++ -std=c++11 -fdiagnostics-color=never
@@ -78,12 +82,26 @@ endif
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 .DEFAULT_GOAL := binaries
-.PHONY: binaries clean
+.PHONY: binaries extras clean
 
-binaries: skesa gfa_connector kmercounter
+BINARIES = skesa gfa_connector kmercounter
+EXTRAS = vdb_lib.zip vdb_bin.zip ngs_lib.zip
+
+binaries: $(BINARIES)
+extras: $(EXTRAS)
 
 clean: 
-	rm -f $(binaries) *.o
+	rm -f $(BINARIES) $(EXTRAS) *.o
+
+vdb_lib.zip:
+	zip -j -y vdb_lib.zip $(VDB_LINUXPATH)/lib/*
+
+ngs_lib.zip:
+	zip -j -y ngs_lib.zip $(NGS_LINUXPATH)/lib/*
+
+vdb_bin.zip:
+	zip -j -y vdb_bin.zip $(VDB_LINUXPATH)/bin/*
+
 
 glb_align.o: glb_align.hpp Makefile
 

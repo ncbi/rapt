@@ -24,6 +24,10 @@ echo -e "VERSION\tncbi_crisper\t$NCBI_CRISPER_VERSION" >> package.versions
 docker_tag="$USERNAME/$IMAGE:$VERSION"
 docker_production_tag="$USERNAME/$IMAGE:latest"
 
+# Temporary hack to fix the broken teamcity build
+mkdir hack_libs
+cp -P /opt/ncbi/64/trace_software/vdb/vdb-versions/2.10.5/linux/release/x86_64/lib/libncbi-vdb.so* hack_libs
+
 docker --log-level debug  build \
        --file "$sdir/Dockerfile" \
        --build-arg version=${VERSION} \
