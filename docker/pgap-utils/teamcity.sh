@@ -33,7 +33,7 @@ echo "##teamcity[blockClosed name='Archive']"
 
 echo "##teamcity[progressMessage 'Materialize Data']]"
 echo "##teamcity[blockOpened name='Materialize' description='Materialize Data']"
-./materialize-data.sh
+./materialize-data.sh "$IMAGE_NAME"
 echo "##teamcity[blockClosed name='Materialize']"
 
 echo "##teamcity[progressMessage 'Copy data to S3']]"

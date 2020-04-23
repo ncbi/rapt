@@ -61,8 +61,25 @@ gunzip --stdout  /am/ftp-genomes/ASSEMBLY_REPORTS/species_genome_size.txt.gz > "
 cp -r /panfs/pan1/gpipe/ThirdParty/ExternalData/Contamination/production/CommonContaminants/adaptors_for_screening_proks+euks.fa "$output"/adaptor_fasta.fna
 mkdir -p "$output"/contam_in_prok_blastdb_dir
 cp /panfs/pan1/gpipe/ThirdParty/ExternalData/Contamination/production/CommonContaminants/contam_in_prok.??? "$output"/contam_in_prok_blastdb_dir/
+USERNAME=ncbi
+IMAGE="$1"
+VERSION=$(cat binaries/VERSION)
+docker_tag="$USERNAME/$IMAGE:$VERSION"
+docker run -i -w /tmp/t \
+    --volume="$output":/tmp/t:ro \
+    --volume=./:/tmp/scripts:ro \
+     "$docker_tag"  /tmp/scripts/checksum.sh > "$output/checksum.md5"
+
 ##
 ##   Last steps
+##
+
+##
+##   md5 check sum
+##
+
+
+
 ##
 ##   Catch-all: abort if non-UNIX compliant
 ##
