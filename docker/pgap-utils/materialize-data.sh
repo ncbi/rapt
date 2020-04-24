@@ -66,7 +66,7 @@ IMAGE="$1"
 VERSION=$(cat binaries/VERSION)
 docker_tag="$USERNAME/$IMAGE:$VERSION"
 docker run -i -w /tmp/t \
-    --volume="$output":/tmp/t:ro \
+    --volume=$(readlink -f "$output"):/tmp/t:ro \
     --volume=$(readlink -f ./):/tmp/scripts:ro \
      "$docker_tag"  /tmp/scripts/checksum.sh > "$output/checksum.md5"
 
