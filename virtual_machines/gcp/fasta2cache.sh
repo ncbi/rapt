@@ -16,6 +16,7 @@ blastdb_mft=blastdb.mft
 GP_ep=badrazat
 GP_HOME=/panfs/pan1.be-md.ncbi.nlm.nih.gov/gpipe/home/badrazat/local-install/current
 GP_SQL_SRVR=$("$GP_HOME"/bin/gp_sh "$GP_ep" "$GP_HOME"/bin/gp_get_attr GP_SQL_SRVR)
+bin="$GP_HOME/arch/x86_64/bin"
 source "$sdir/mywait.sh"
 pids=$(pwd)/pids.$$
 rm -f $pids
@@ -23,7 +24,7 @@ rm -f $pids
 if true; then
     for type in O P; do
     rm -f "$type".LDS
-    ~/gpipe-arch-bin/protein_extract \
+    $bin/protein_extract \
         -input "$type".lenwei.fasta \
         -ifmt fasta \
         -olds2 "$type".LDS \
