@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y libxml2
 
 COPY netopt /netopt/
 COPY usr /usr/
+COPY etc /etc/
 
 CMD ["/bin/bash"]
 
