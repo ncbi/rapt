@@ -78,7 +78,7 @@ for type in O P; do
     "$GP_HOME"/bin/gp_sh "$GP_ep" "$GP_HOME"/bin/taskrun_upd_param -taskrun "$tr" -prog cluster_blastp_wnode -param max_jobs \
         -value 1             
     "$GP_HOME"/bin/gp_sh "$GP_ep" "$GP_HOME"/bin/taskrun_upd_param -taskrun "$tr" -prog cluster_blastp_wnode -param max_target_seqs \
-        -value 50             
+        -value 1000000             
     "$GP_HOME"/bin/gp_sh "$GP_ep" "$GP_HOME"/bin/taskrun_upd_param -taskrun "$tr" -prog cluster_blastp_wnode -param ofmt \
         -value asn-binary             
     "$GP_HOME"/bin/gp_sh "$GP_ep" "$GP_HOME"/bin/taskrun_upd_param -taskrun "$tr" -prog cluster_blastp_wnode -param seg \
