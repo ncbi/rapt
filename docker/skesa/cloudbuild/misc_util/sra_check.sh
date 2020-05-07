@@ -1,4 +1,4 @@
-#!/bin/bash  
+#!/bin/bash -x  
 #check whether sra retrieval uses cloud or ncbi storage, verifies retrieval function.
 #returns 0 if cloud retrieval works, 1 otherwise
 
@@ -14,11 +14,26 @@ while getopts ":a:v" opt; do
 done
 shift $((OPTIND -1))
 
-cloud_substr='ncbi.nlm.nih.gov/sdlr'
+ncbi_base='www.ncbi.nlm.nih.gov'
+cloud_suf='/sdlr'
+test_port='443'
+# https 443 test_port='443'
+cloud_substr=${ncbi_base}${cloud_suf}
 noncloud_substr='sra-download-internal'
-run_path=$(srapath ${sra_run_acc})
+
+# test port access.  If port is closed  using /dev/tcp hangs, so wrap attempt in timeout
+timeout 1s bash -c "echo EOF > /dev/tcp/${ncbi_base}/${test_port}" 2> /dev/null || \
+(echo "port closed" > /dev/stderr; exit 2)
 rc=$?
 
+if [ 0 != ${rc} ] ; then
+   echo 'problem with tcp access to ncbi.gov sdl host'
+   exit 1
+fi
+
+
+run_path=$(srapath ${sra_run_acc})
+rc=$?
 if [ 0 != ${rc} ] ; then
    echo 'problem retrieving sra path'
    exit 1
@@ -26,6 +41,15 @@ fi
 
 if grep -q "${cloud_substr}" <<< "${run_path}"; then 
    echo "cloud retrieval"
+
+   # download host ip address from https://github.com/ncbi/sra-tools/wiki/Firewall-and-Routing-Information
+   timeout 1s bash -c "echo EOF > /dev/tcp/130.14.250.24/22" 2> /dev/null || \
+   (echo "port closed" > /dev/stderr; exit 2)
+   rc=$?
+   if [ 0 != ${rc} ] ; then
+      echo 'problem with tcp access to ncbi.gov download host'
+      exit 1
+   fi
 
    run_fasta=$(fastq-dump -X 5 --stdout --fasta 0 ${sra_run_acc})
    rc=$?
