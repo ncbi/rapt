@@ -1,4 +1,7 @@
 steps:
+- name: "debian"
+  args: ["chmod", "700", "app/run_rapt.py"]
+
 - name: "gcr.io/cloud-builders/docker"
   args: [
     "build",
