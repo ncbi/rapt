@@ -1,8 +1,10 @@
 #!/bin/bash
 set -eux
-BRANCH=$1 # %teamcity.build.branch%
-SVNREV=$2 # %dep.GP_GpPgap2_Release.build.vcs.number.pgap_2% \
+BRANCH="$1"; shift # %teamcity.build.branch%
+SVNREV="$1"; shift # %dep.GP_GpPgap2_Release.build.vcs.number.pgap_2% \
+gcloud_key_file="$1"; shift # %gpipe_gcp_json%
 SVNURL=$3 # %dep.GP_GpPgap2_Release.vcsroot.pgap_2.url% we always have this, even for origin/dev builds
+
 
 echo "##teamcity[progressMessage 'Determine Build Type']]"
 TARBALL=install_gencoll_release.tar.gz
@@ -48,5 +50,5 @@ echo "##teamcity[blockClosed name='S3']"
 
 echo "##teamcity[progressMessage 'Copy data to GS']]"
 echo "##teamcity[blockOpened name='GS' description='Copy data to GS']"
-./upload-data-GCP.sh
+./upload-data-GCP.sh "$gcloud_key_file"
 echo "##teamcity[blockClosed name='GS']"
