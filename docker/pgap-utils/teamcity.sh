@@ -36,7 +36,17 @@ echo "##teamcity[blockOpened name='Materialize' description='Materialize Data']"
 ./materialize-data.sh "$IMAGE_NAME"
 echo "##teamcity[blockClosed name='Materialize']"
 
+echo "##teamcity[progressMessage 'Prepare tarbalsl for uploading']]"
+echo "##teamcity[blockOpened name='Tarballs' description='Prepare tarbalsl for uploading']"
+./create-tarballs-for-upload.sh $BUILD_TYPE
+echo "##teamcity[blockClosed name='Tarballs']"
+
 echo "##teamcity[progressMessage 'Copy data to S3']]"
 echo "##teamcity[blockOpened name='S3' description='Copy data to S3']"
-./upload-data.sh $BUILD_TYPE
+./upload-data.sh
 echo "##teamcity[blockClosed name='S3']"
+
+echo "##teamcity[progressMessage 'Copy data to GS']]"
+echo "##teamcity[blockOpened name='GS' description='Copy data to GS']"
+./upload-data-GCP.sh
+echo "##teamcity[blockClosed name='GS']"
