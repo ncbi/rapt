@@ -9,7 +9,7 @@ SVNURL="$1"; shift # %dep.GP_GpPgap2_Release.vcsroot.pgap_2.url% we always have 
 echo "##teamcity[progressMessage 'Determine Build Type']]"
 TARBALL=install_gencoll_release.tar.gz
 IMAGE_NAME=pgap-utils
-BUILD_TYPE=$BRANCH
+BUILD_TYPE="$BRANCH"
 if [ "${BUILD_TYPE}" = "dev" ]; then
   TARBALL=install_gencoll.tar.gz
 fi
@@ -19,13 +19,13 @@ set +x
 
 echo "##teamcity[progressMessage 'Fetch binaries and third party data']]"
 echo "##teamcity[blockOpened name='FetchData' description='Fetch binaries and third party data']"
-./fetch-data.sh $TARBALL $BRANCH $SVNREV $SVNURL
+./fetch-data.sh "$TARBALL" "$BRANCH" "$SVNREV" "$SVNURL"
 echo "##teamcity[blockClosed name='FetchData']"
 
 echo "##teamcity[progressMessage 'Generate Container Image']]"
 echo "##teamcity[blockOpened name='Container' description='Generate Container Image']"
-./build-image.sh $IMAGE_NAME
-./save-image.sh $IMAGE_NAME
+./build-image.sh "$IMAGE_NAME"
+./save-image.sh "$IMAGE_NAME"
 echo "##teamcity[blockClosed name='Container']"
 
 echo "##teamcity[progressMessage 'Archive input-links']]"
@@ -40,7 +40,7 @@ echo "##teamcity[blockClosed name='Materialize']"
 
 echo "##teamcity[progressMessage 'Prepare tarbalsl for uploading']]"
 echo "##teamcity[blockOpened name='Tarballs' description='Prepare tarbalsl for uploading']"
-./create-tarballs-for-upload.sh $BUILD_TYPE
+./create-tarballs-for-upload.sh "$BUILD_TYPE"
 echo "##teamcity[blockClosed name='Tarballs']"
 
 echo "##teamcity[progressMessage 'Copy data to S3']]"
