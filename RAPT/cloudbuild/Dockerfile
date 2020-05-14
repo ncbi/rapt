@@ -17,5 +17,5 @@ COPY . /
 
 ENTRYPOINT []
 
-CMD ["python", "/app/run_rapt.py"]
+CMD ["python", "/app/execute.py"]
 
