@@ -16,35 +16,19 @@ shift $((OPTIND -1))
 
 
 
-gcloud compute firewall-rules create allow-egress-lo-tcp-www  --action allow  --rules tcp:443,22 --destination-ranges 130.14.29.110/32 --direction=EGRESS --priority ${priority}
-gcloud compute firewall-rules create allow-ingress-lo-tcp-www --action allow  --rules tcp:443,22 --source-ranges 130.14.29.110/32 --direction=INGRESS --priority ${priority}
+gcloud compute firewall-rules create allow-egress-lo-tcp-www  --action allow  --rules tcp:443,tcp:22 --destination-ranges 130.14.29.110/32 --direction=EGRESS --priority ${priority}
+gcloud compute firewall-rules create allow-ingress-lo-tcp-www --action allow  --rules tcp:443,tcp:22 --source-ranges 130.14.29.110/32 --direction=INGRESS --priority ${priority}
 
-gcloud compute firewall-rules create allow-egress-lo-udp-24 --action allow  --rules udp:33001-33009 --destination-ranges 130.14.250.24/32 --direction=EGRESS --priority ${priority}
-gcloud compute firewall-rules create allow-egress-lo-tcp-24 --action allow  --rules tcp:443,22 --destination-ranges 130.14.250.24/32 --direction=EGRESS --priority ${priority}
-gcloud compute firewall-rules create allow-ingress-lo-udp-24 --action allow  --rules udp:33001-33009 --source-ranges 130.14.250.24/32 --direction=INGRESS --priority ${priority}
-gcloud compute firewall-rules create allow-ingress-lo-tcp-24 --action allow  --rules tcp:443,22 --source-ranges 130.14.250.24/32 --direction=INGRESS --priority ${priority}
+for ip in 130.14.250.{24,25,26,27} 165.112.9.{231,232} 
 
-gcloud compute firewall-rules create allow-egress-lo-udp-25 --action allow  --rules udp:33001-33009 --destination-ranges 130.14.250.25/32 --direction=EGRESS --priority ${priority}
-gcloud compute firewall-rules create allow-egress-lo-tcp-25 --action allow  --rules tcp:443,22 --destination-ranges 130.14.250.25/32 --direction=EGRESS --priority ${priority}
-gcloud compute firewall-rules create allow-ingress-lo-udp-25 --action allow  --rules udp:33001-33009 --source-ranges 130.14.250.25/32 --direction=INGRESS --priority ${priority}
-gcloud compute firewall-rules create allow-ingress-lo-tcp-25 --action allow  --rules tcp:443,22 --source-ranges 130.14.250.25/32 --direction=INGRESS --priority ${priority}
+   do
+      echo ${ip}
+      IFS=.  
+      read ip0 ip1 ip2 ip3 <<< "$ip"  
+      #echo ${ip3}
+      gcloud compute firewall-rules create allow-egress-lo-udp-${ip3} --action allow  --rules udp:33001-33009 --destination-ranges ${ip}/32 --direction=EGRESS --priority ${priority}
+      gcloud compute firewall-rules create allow-egress-lo-tcp-${ip3} --action allow  --rules tcp:443,tcp:22 --destination-ranges ${ip}/32 --direction=EGRESS --priority ${priority}
+      gcloud compute firewall-rules create allow-ingress-lo-udp-${ip3} --action allow  --rules udp:33001-33009 --source-ranges ${ip}/32 --direction=INGRESS --priority ${priority}
+      gcloud compute firewall-rules create allow-ingress-lo-tcp-${ip3} --action allow  --rules tcp:443,tcp:22 --source-ranges ${ip}/32 --direction=INGRESS --priority ${priority}
 
-gcloud compute firewall-rules create allow-egress-lo-udp-26 --action allow  --rules udp:33001-33009 --destination-ranges 130.14.250.26/32 --direction=EGRESS --priority ${priority}
-gcloud compute firewall-rules create allow-egress-lo-tcp-26 --action allow  --rules tcp:443,22 --destination-ranges 130.14.250.26/32 --direction=EGRESS --priority ${priority}
-gcloud compute firewall-rules create allow-ingress-lo-udp-26 --action allow  --rules udp:33001-33009 --source-ranges 130.14.250.26/32 --direction=INGRESS --priority ${priority}
-gcloud compute firewall-rules create allow-ingress-lo-tcp-26 --action allow  --rules tcp:443,22 --source-ranges 130.14.250.26/32 --direction=INGRESS --priority ${priority}
-
-gcloud compute firewall-rules create allow-egress-lo-udp-27 --action allow  --rules udp:33001-33009 --destination-ranges 130.14.250.27/32 --direction=EGRESS --priority ${priority}
-gcloud compute firewall-rules create allow-egress-lo-tcp-27 --action allow  --rules tcp:443,22 --destination-ranges 130.14.250.27/32 --direction=EGRESS --priority ${priority}
-gcloud compute firewall-rules create allow-ingress-lo-udp-27 --action allow  --rules udp:33001-33009 --source-ranges 130.14.250.27/32 --direction=INGRESS --priority ${priority}
-gcloud compute firewall-rules create allow-ingress-lo-tcp-27 --action allow  --rules tcp:443,22 --source-ranges 130.14.250.27/32 --direction=INGRESS --priority ${priority}
-
-gcloud compute firewall-rules create allow-egress-lo-udp-231 --action allow  --rules udp:33001-33009 --destination-ranges 165.112.9.231/32 --direction=EGRESS --priority ${priority}
-gcloud compute firewall-rules create allow-egress-lo-tcp-231 --action allow  --rules tcp:443,22 --destination-ranges 165.112.9.231/32 --direction=EGRESS --priority ${priority}
-gcloud compute firewall-rules create allow-ingress-lo-udp-231 --action allow  --rules udp:33001-33009 --source-ranges 165.112.9.231/32 --direction=INGRESS --priority ${priority}
-gcloud compute firewall-rules create allow-ingress-lo-tcp-231 --action allow  --rules tcp:443,22 --source-ranges 165.112.9.231/32 --direction=INGRESS --priority ${priority}
-
-gcloud compute firewall-rules create allow-egress-lo-udp-232 --action allow  --rules udp:33001-33009 --destination-ranges 165.112.9.232/32 --direction=EGRESS --priority ${priority}
-gcloud compute firewall-rules create allow-egress-lo-tcp-232 --action allow  --rules tcp:443,22 --destination-ranges 165.112.9.232/32 --direction=EGRESS --priority ${priority}
-gcloud compute firewall-rules create allow-ingress-lo-udp-232 --action allow  --rules udp:33001-33009 --source-ranges 165.112.9.232/32 --direction=INGRESS --priority ${priority}
-gcloud compute firewall-rules create allow-ingress-lo-tcp-232 --action allow  --rules tcp:443,22 --source-ranges 165.112.9.232/32 --direction=INGRESS --priority ${priority}
+   done
