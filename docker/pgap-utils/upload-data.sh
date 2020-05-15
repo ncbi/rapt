@@ -7,32 +7,16 @@
 #
 
 set -uexo pipefail
-PGAP_BUILD_TYPE=$1
-
-VERSION=`cat binaries/VERSION`
-
-inputdir=input-${VERSION}
-ln -sf ${inputdir} input
+tarballs_file=tarballs.for.upload
 pids=
-for files_from in files-from.*.list; do
+
+for tarfile in $(cat "$tarballs_file" /dev/null); do
     (
-        package=$(echo "$files_from" | perl -pe 's{files-from\.}{}; s{\.list}{}' )
-        if [ "$package" = "pgap" ]; then
-            tarfile=${inputdir}.${PGAP_BUILD_TYPE}.tgz
-        else
-            tarfile=${inputdir}.${PGAP_BUILD_TYPE}."$package".tgz
-        fi
-        tar cvzf ${tarfile}  --mode='u+w' --files-from <(
-            cat "$files_from" |
-            grep -vP '^#'  | 
-            grep -P '\S' | 
-            perl -pe 's{^}{'"$inputdir"'/}' 
-            ) 
         aws s3 cp --acl public-read --no-progress ${tarfile} s3://pgap/${tarfile}
+        #  --no-progress ${tarfile} 
     ) &
     pids="$pids $!"
 done
 for pid in $pids; do
     wait $pid
 done
-
