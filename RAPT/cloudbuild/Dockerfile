@@ -6,6 +6,8 @@ ENV PATH /env/bin:$PATH
 COPY app/requirements.txt /app/
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
+RUN apt-get -y update && apt-get install -y ca-certificates libxml2
+
 ENV PYTHONPATH /app
 ENV PYTHONUNBUFFERED 1
 
