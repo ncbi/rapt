@@ -26,8 +26,8 @@ for ip in 130.14.250.{24,25,26,27} 165.112.9.{231,232}
       IFS=.  
       read ip0 ip1 ip2 ip3 <<< "$ip"  
       #echo ${ip3}
-      gcloud compute firewall-rules create allow-egress-lo-udp-${ip3} --action allow  --rules udp:33001-33009 --destination-ranges ${ip}/32 --direction=EGRESS --priority ${priority}
-      gcloud compute firewall-rules create allow-egress-lo-tcp-${ip3} --action allow  --rules tcp:443,tcp:22 --destination-ranges ${ip}/32 --direction=EGRESS --priority ${priority}
+      #gcloud compute firewall-rules create allow-egress-lo-udp-${ip3} --action allow  --rules udp:33001-33009 --destination-ranges ${ip}/32 --direction=EGRESS --priority ${priority}
+      #gcloud compute firewall-rules create allow-egress-lo-tcp-${ip3} --action allow  --rules tcp:443,tcp:22 --destination-ranges ${ip}/32 --direction=EGRESS --priority ${priority}
       gcloud compute firewall-rules create allow-ingress-lo-udp-${ip3} --action allow  --rules udp:33001-33009 --source-ranges ${ip}/32 --direction=INGRESS --priority ${priority}
       gcloud compute firewall-rules create allow-ingress-lo-tcp-${ip3} --action allow  --rules tcp:443,tcp:22 --source-ranges ${ip}/32 --direction=INGRESS --priority ${priority}
 
