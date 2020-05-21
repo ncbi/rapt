@@ -19,7 +19,8 @@ cloud_suf='/sdlr'
 test_port='443'
 # https 443 test_port='443'
 cloud_substr=${ncbi_base}${cloud_suf}
-noncloud_substr='sra-download-internal'
+#in addition to documented ncbi download host also possible is https://sra-downloadb.be-md.ncbi.nlm.nih.gov (and maybe colo eq)
+noncloud_substr='sra-download'
 
 # test port access.  If port is closed  using /dev/tcp hangs, so wrap attempt in timeout
 timeout 1s bash -c "echo EOF > /dev/tcp/${ncbi_base}/${test_port}" 2> /dev/null || \

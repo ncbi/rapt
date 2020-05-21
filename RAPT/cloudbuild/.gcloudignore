@@ -4,3 +4,6 @@ meta
 include
 src
 README.md
+# these are irrelevant for docker image
+misc-util/allow_firewall.sh
+misc-util/blocking_firewall.sh
