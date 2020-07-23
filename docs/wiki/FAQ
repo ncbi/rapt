@@ -1,0 +1,14 @@
+See the FAQs for PGAP
+
+{quote}Can I submit the genome I just annotate to GenBank?{quote}
+It's complicated
+
+Can I use samples that are not from Illimina?
+
+Can I use a different Readd Assembly other  than SKESA?
+
+Who do I contact for help?
+
+What environments are supported with RAPT?
+although RAPT is a docker image and will work in theory where every docker works, we only support the Google platform.
+
