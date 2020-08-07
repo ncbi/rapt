@@ -1,9 +1,0 @@
-{
-    "accession": "SRR4835107",
-    "fasta_url": "https://sra-download.ncbi.nlm.nih.gov/traces/sra13/SRZ/004835/SRR4835107/SRR4835107.contigs.fasta",
-    "genus_species": "Salmonella enterica",
-    "topology": "linear",
-    "bioproject": "PRJNA316728",
-    "biosample": "SAMN04160831",
-    "debug": "true"
-}
