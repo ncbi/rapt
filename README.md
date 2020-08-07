@@ -24,8 +24,7 @@ Here are instructions to execute RAPT once your system is set up. Additional ins
 Cut and paste or type these three commands at your Cloud Shell prompt:
 
 ```bash
-gsutil cp -r gs://ncbi-rapt/releases/RC-0.0.3-28347239 .
-cd RC-0.0.3-28347239
+curl -o run_rapt_gcp.sh https://raw.githubusercontent.com/ncbi/rapt/master/script/run_rapt_gcp.sh
 chmod 755 ./run_rapt_gcp.sh
 ```
 4.	Explore ```run_rapt_gcp.sh```  
