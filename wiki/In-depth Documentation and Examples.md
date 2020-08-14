@@ -53,7 +53,7 @@ Note: If you use someone else&#39;s bucket, you need write permission.
 - You are now finished with this operation.
 4. Go back to Compute Engine – hint, you can put compute engine into Search product and resources box
 
-5. Start a [Cloud Shell](https://ssh.cloud.google.com/cloudshell/editor) by pressing its icon. A Cloud Shell has certain [limits](https://cloud.google.com/shell/docs/limitations), if you find these limits to restricting you can create a Virtual Machine. When creating the Virtual Machine, make sure you select the option to "Allow full access to all Cloud APIs"
+5. Start a [Cloud Shell](https://ssh.cloud.google.com/cloudshell/editor) by pressing its icon. A Cloud Shell has certain [limits](https://cloud.google.com/shell/docs/limitations), if you find these limits to restricting you can create a Virtual Machine. When creating the Virtual Machine, make sure you select the option to "Allow full access to all Cloud APIs".
 
 ![](start-shell.png)
 
@@ -61,7 +61,8 @@ Note: If you use someone else&#39;s bucket, you need write permission.
 
 Cut and paste or type in the following commands at the command line prompt
 ```bash
-curl -o run_rapt_gcp.sh https://raw.githubusercontent.com/ncbi/rapt/master/script/run_rapt_gcp.sh
+gsutil cp -r gs://ncbi-rapt/releases/RC-0.0.3-28347239 .
+cd RC-0.0.3-28347239
 chmod 755 ./run_rapt_gcp.sh
 ```
 
