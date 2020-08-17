@@ -1,6 +1,6 @@
 # Read Assembly and Annotation Pipeline Tool (RAPT) – Documentation
 RAPT is a NCBI pipeline designed for assembling and annotating Illumina genome sequencing reads obtained from bacterial or archaeal isolates. RAPT consists of two major NCBI components, SKESA and PGAP. SKESA is a de-novo assembler for microbial genomes based on DeBruijn graphs. PGAP is a prokaryotic genome annotation pipeline that combines ab initio gene prediction algorithms with homology based methods. RAPT takes an Illumina SRA run or a fasta file as input and produces an assembled and annotated genome. 
-![RAPT](https://bitbucket.ncbi.nlm.nih.gov/projects/GPEXT/repos/rapt-public/raw/RAPT_context2.png?at=refs%2Fheads%2Fdevelop)
+![RAPT](https://github.com/ncbi/rapt/blob/release/0.0.3/RAPT_context2.png)
 
 This repository contains instruction and examples for running RAPT. 
 Some basic knowledge of Unix/Linux commands, [SKESA](https://github.com/ncbi/SKESA), and [PGAP](https://github.com/ncbi/pgap) is useful in completing this tutorial.
