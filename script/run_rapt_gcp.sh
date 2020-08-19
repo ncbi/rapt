@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 ###############################* Global Constants *##################################
-IMAGE_URI=us.gcr.io/ncbi-seqplus-rapt-build/rapt/rapt:RC-0.0.3-28347239
+IMAGE_URI=docker.io/ncbi/rapt:RC-0.0.3
 RAPT_VERSION=rapt-28347239
 APIS_REQUIRED=("Cloud Life Sciences API" "Compute Engine API" "Cloud OS Login API" "Google Cloud Storage JSON API")
 
