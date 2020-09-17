@@ -10,7 +10,7 @@ Please cite NCBI in any work or product based on this material.
 The Docker image contains third-party tools distributed under the licensing terms of the respective license holders.
 ### GeneMarkS-2+
 
-GeneMarkS-2+ is distributed as part of RAPT and PGAP with limited rights of use and redistribution from the Georgia Tech Research Corporation. See the full text of the [license](https://bitbucket.ncbi.nlm.nih.gov/projects/GPEXT/repos/rapt-public/browse/docs/wiki/GeneMarkS_Software/GeneMarkS_Software_License.txt).
+GeneMarkS-2+ is distributed as part of RAPT and PGAP with limited rights of use and redistribution from the Georgia Tech Research Corporation. See the full text of the [license](GeneMarkS_Software/GeneMarkS_Software_License.txt).
 ### TIGRFAMs
 
 The original TIGRFAMs database was a research project of the J. Craig Venter Institute (JCVI) . TIGRFAMs, short for The Institute for Genomic Research's database of protein families, is a collection of manually curated protein families focusing primarily on prokaryotic sequences. It consists of hidden Markov models (HMMs), multiple sequence alignments, Gene Ontology (GO) terminology, Enzyme Commission (EC) numbers, gene symbols, protein family names, descriptive text, cross-references to related models in TIGRFAMs and other databases, and pointers to the literature. The work has been described in the articles listed in the References section above and use of the TIGRFAMs database must grant proper attribution by citing those four articles.
