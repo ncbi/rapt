@@ -1,23 +1,23 @@
 # Read Assembly and Annotation Pipeline Tool (RAPT) – Documentation
 RAPT is a NCBI pipeline designed for assembling and annotating Illumina genome sequencing reads obtained from bacterial or archaeal isolates. RAPT consists of two major NCBI components, SKESA and PGAP. SKESA is a de-novo assembler for microbial genomes based on DeBruijn graphs. PGAP is a prokaryotic genome annotation pipeline that combines ab initio gene prediction algorithms with homology based methods. RAPT takes an Illumina SRA run or a fasta file as input and produces an assembled and annotated genome. 
-![RAPT](https://github.com/ncbi/rapt/blob/master/RAPT_context2.png)
+![RAPT](wiki/Images/RAPT_context2.png)
 
 This repository contains instruction and examples for running RAPT. 
 Some basic knowledge of Unix/Linux commands, [SKESA](https://github.com/ncbi/SKESA), and [PGAP](https://github.com/ncbi/pgap) is useful in completing this tutorial.
-Please see our [wiki page](https://github.com/ncbi/rapt/tree/master/docs/wiki) for References, Licenses, FAQs, and In-depth Documentation and Examples. 
+Please see our [wiki page](https://bitbucket.ncbi.nlm.nih.gov/projects/GPEXT/repos/rapt-public/browse/docs/wiki) for References, Licenses, FAQs, and In-depth Documentation and Examples. 
 
 
 ## System requirements
 RAPT is designed to run on the Google Cloud Platform (GCP), it will run from the Google Shell or from a google instance with the following prerequisites:
 - gcloud SDK (automatically enabled in Cloud Shell)
 - gsutil tool (automatically enabled in Cloud Shell)
-- Cloud Life Sciences - for help see [Quick start using a Cloud Shell](https://github.com/ncbi/rapt/blob/master/docs/wiki/In-depth%20Documentation%20and%20Examples.md)
-- Access to a Google storage bucket for your data - for help see [Quick start using a Cloud Shell](https://github.com/ncbi/rapt/blob/master/docs/wiki/In-depth%20Documentation%20and%20Examples.md)
+- Cloud Life Sciences - for help see [Quick start using a Cloud Shell](https://bitbucket.ncbi.nlm.nih.gov/projects/GPEXT/repos/rapt-public/browse/docs/wiki/In-depth%20Documentation%20and%20Examples.md)
+- Access to a Google storage bucket for your data - for help see [Quick start using a Cloud Shell](https://bitbucket.ncbi.nlm.nih.gov/projects/GPEXT/repos/rapt-public/browse/docs/wiki/In-depth%20Documentation%20and%20Examples.md)
 
 RAPT will bring up and shut down Google instances as needed.   
 
 ## Quick start
-Here are instructions to execute RAPT once your system is set up. Additional instructions are available on our [wiki page](https://github.com/ncbi/rapt/blob/master/docs/wiki/In-depth%20Documentation%20and%20Examples.md). 
+Here are instructions to execute RAPT once your system is set up. Additional instructions are available on our [wiki page](https://bitbucket.ncbi.nlm.nih.gov/projects/GPEXT/repos/rapt-public/browse/docs/wiki/In-depth%20Documentation%20and%20Examples.md). 
 1.	In a browser, sign into [GCP](https://console.cloud.google.com/)
 2.  Invoke a Cloud Shell
 3.	Download the RAPT command line interface, ```run_rapt_gcp.sh```    
@@ -122,11 +122,11 @@ For technical details of this job, run:
 $ 
 ```
 
-To get more execution details and examples in our [wiki page](https://github.com/ncbi/rapt/blob/master/docs/wiki/In-depth%20Documentation%20and%20Examples.md). 
+To get more execution details and examples in our [wiki page](https://bitbucket.ncbi.nlm.nih.gov/projects/GPEXT/repos/rapt-public/browse/docs/wiki/In-depth%20Documentation%20and%20Examples.md). 
 - Setting up GCP with step by step guide
 - Using fastq files as input
 
-If you have other questions, please visit our [FAQs page](https://github.com/ncbi/rapt/blob/master/docs/wiki/FAQ.md).
+If you have other questions, please visit our [FAQs page](https://bitbucket.ncbi.nlm.nih.gov/projects/GPEXT/repos/rapt-public/browse/docs/wiki/FAQ.md).
 
 ### Review the output
 RAPT generates three output files and puts them in the GCP bucket you specified. These files are named after the 10-character job-id assigned at the start of the execution (i.e. "2894b72f9f"). 

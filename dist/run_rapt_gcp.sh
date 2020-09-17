@@ -1,17 +1,18 @@
 #!/usr/bin/env bash
 
 ###############################* Global Constants *##################################
-IMAGE_URI=docker.io/ncbi/rapt:RC-0.0.3
-RAPT_VERSION=rapt-28347239
+IMAGE_URI="ncbi/rapt:v0.1.0"
+RAPT_VERSION="rapt-28973346"
 APIS_REQUIRED=("Cloud Life Sciences API" "Compute Engine API" "Cloud OS Login API" "Google Cloud Storage JSON API")
 
 GCP_LOGS_VIEWER="https://console.cloud.google.com/logs/viewer"
 
-DEFAULT_VM="n1-highmem-32"
+DEFAULT_VM="n1-highmem-16"
 DEFAULT_BDISKSIZE=128
 DEFAULT_FORMAT=table
 DEFAULT_JOB_TIMEOUT="86400s"	##24 hours
-
+DEFAULT_REGION="us-east4"
+DEFAULT_LOCATION="us-central1"
 ##subcommands
 CMD_ACXN=submitacc
 CMD_FASTQ=submitfastq
@@ -33,6 +34,8 @@ OPT_VMTYPE="--machine-type"
 OPT_BDSIZE="--boot-disk-size"
 OPT_MAXLST="-n"
 OPT_MAXLST_L="--limit"
+##OPT_LOCATION="--location"
+OPT_REGIONS="--regions"
 OPT_DELIM="-d"
 OPT_DELIM_L="--delimiter"
 OPT_JOBTIMEOUT="--timeout"
@@ -45,7 +48,6 @@ FLG_USE_CSV="--csv"
 ####################################### Utilities ####################################
 
 script_name=$(basename "$0")
-
 
 err()
 {
@@ -70,7 +72,7 @@ Job creation commands:
 		[${OPT_JOBTIMEOUT} SECONDS]
 
 		Submit a job to run RAPT on an SRA run accession (sra_acxn).
-		
+
 	${CMD_FASTQ} <fastq_uri> <${OPT_ORG} "Genus species"> [${OPT_STRAIN} "ATCC xxxx"]
 		<${OPT_BUCKET}|${OPT_BUCKET_L} URL> [${OPT_LABEL} LABEL] [${FLG_SKESA_ONLY}]
 		[${FLG_NOREPORT}] [${OPT_VMTYPE} TYPE] [${OPT_BDSIZE} NUM]
@@ -78,15 +80,14 @@ Job creation commands:
 
 		Submit a job to run on sequences in a custom FASTQ formatted file.
 		fastq_uri is expected to point to location in google cloud storage (bucket).
-		
+
 		The ${OPT_ORG} argument is mandatory, but can contain only the genus part. Species
 		part is recommended but optional. The ${OPT_STRAIN} argument is optional.
 		All taxonomy information provided here will appear in output data.
-		
 
 	${CMD_TEST} <${OPT_BUCKET}|${OPT_BUCKET_L}> [${OPT_LABEL} LABEL] [${FLG_SKESA_ONLY}]
 		[${FLG_NOREPORT}]
-		
+
 		Run the internal test suites. When RAPT does not produce the expected results,
 		it may be helpful to use this command run the test suite to ensure RAPT
 		is functioning normally.
@@ -94,39 +95,44 @@ Job creation commands:
 		Common options:
 		======================
 		${OPT_BUCKET}|${OPT_BUCKET_L} URL
-			
+
 			Mandatory. Specify the destination storage location to store results and job logs.
-			
+
 		${OPT_LABEL} LABEL
-			
+
 			Optional. Tag the job with a custom label, which can be used to filter jobs
 			with the joblist command. Google cloud platform requires that the label
 			can only contain lower case letters, numbers and dash (-). Dot and white spaces
 			are not allowed.
-			
+
 		${FLG_SKESA_ONLY}
-			
+
 			Only assemble sequences to contigs, but do not annotate.
-			
+
 		${FLG_NOREPORT}
-			
-			optional. Prevents usage report back to NCBI. By default, RAPT sends
-			usage information back to NCBI for statistical analysis. No personal or
-			project-specific information (such as the input data) are collected.
-		
+
+			optional. Prevents usage report back to NCBI. By default, RAPT sends usage information
+			back to NCBI for statistical analysis. The information collected are a unique identifier
+			for the RAPT process, the machine IP address, the start and end time of RAPT, and its
+			three modules: SKESA, taxcheck and PGAP. No personal or project-specific information
+			(such as the input data) are collected.
+
+		${OPT_REGIONS}
+			Optional. Specify the GCP regions parameter. Default is a single region ${DEFAULT_REGION}
+
 		${OPT_VMTYPE} TYPE
-			
+
 			Optional. Specify the type of google cloud virtual machine to run this job.
 			Default is "${DEFAULT_VM}" (refer to google cloud documentation), which is
 			suitable for most jobs.
-			
+
 		${OPT_BDSIZE} NUM
-			
+
 			Optional. Set the size (in Gb) of boot disk for the virtual machine. Default
 			size is ${DEFAULT_BDISKSIZE}.
-			
+
 		${OPT_JOBTIMEOUT} SECONDS
-			
+
 			Optional. Set the timeout (seconds) for the job. Default is ${DEFAULT_JOB_TIMEOUT}
 			(24 hours).
 
@@ -140,8 +146,7 @@ Job control commands:
 		Specify ${FLG_USE_CSV} will list jobs in comma-delimited table instead of
 		tab-delimited. Specify a delimit character using "${OPT_DELIM}|${OPT_DELIM_L} DELIM"
 		will override ${FLG_USE_CSV} and output a custom delimited table.
-		
-		
+
 	${CMD_JOBDET} <job-id>
 
 		All job creating commands, if successful, will display a job-id that uniquely
@@ -149,11 +154,11 @@ Job control commands:
 		information of the job identified by the job-id. Be aware this is mostly about
 		technical details of how the job is created and handled by google cloud platform,
 		mostly useful to developers and technical staff than to general users.
-		
+
 	${CMD_CANCEL} <job-id>
 
 		Cancel a running job
-		
+
 	${CMD_VER}
 
 		Display the current RAPT version.
@@ -194,7 +199,6 @@ uuid2jobid()
 ##what is the advantage of using shopt?
 GCP_ACCOUNT=
 GCP_PROJECT=
-
 
 verify_prerequisites()
 {
@@ -255,6 +259,7 @@ job_timeout=${DEFAULT_JOB_TIMEOUT}
 orga=
 strain=
 
+gcp_regions=${DEFAULT_REGION}
 
 ##joblist
 max_lst=
@@ -274,7 +279,7 @@ parse_opts()
 		${OPT_BUCKET}=*|${OPT_BUCKET_L}=*)
 			dst_bkt="${opt#*=}"
 			;;
-		
+
 		${OPT_LABEL})
 			usr_label="$1"
 			shift
@@ -282,7 +287,15 @@ parse_opts()
 		${OPT_LABEL}=*)
 			usr_label="${opt#*=}"
 			;;
-		
+
+		${OPT_REGIONS})
+			gcp_regions="$1"
+			shift
+			;;	
+		${OPT_REGIONS}=*)
+			gcp_regions="${opt#*=}"
+			;;
+
 		${OPT_VMTYPE})
 			vm_type="$1"
 			shift
@@ -290,7 +303,7 @@ parse_opts()
 		${OPT_VMTYPE}=*)
 			vm_type="${opt#*=}"
 			;;	
-		
+
 		${OPT_BDSIZE})
 			bd_size="$1"
 			shift
@@ -298,7 +311,7 @@ parse_opts()
 		${OPT_BDSIZE}=*)
 			bd_size="${opt#*=}"
 			;;
-		
+
 		${OPT_ORG})
 			orga="$1"
 			shift
@@ -306,7 +319,7 @@ parse_opts()
 		${OPT_ORG}=*)
 			orga="${opt#*=}"
 			;;
-		
+
 		${OPT_STRAIN})
 			strain="$1"
 			shift
@@ -314,7 +327,7 @@ parse_opts()
 		${OPT_STRAIN}=*)
 			strain="${opt#*=}"
 			;;
-		
+
 		${OPT_MAXLST}|${OPT_MAXLST_L})
 			max_lst="$1"
 			shift
@@ -322,15 +335,15 @@ parse_opts()
 		${OPT_MAXLST}=*|${OPT_MAXLST_L}=*)
 			max_lst="${opt#*=}"
 			;;
-			
+
 		${FLG_SKESA_ONLY})
 			flags+=("skesa_only")
 			;;
-		
+
 		${FLG_NOREPORT})
 			flags+=("no_report")
 			;;
-			
+
 		${FLG_USE_CSV})
 			format="csv"
 			;;
@@ -375,14 +388,14 @@ labels=("app=rapt" "rapt_version=${RAPT_VERSION}" "user=${USER}" "host=${HOSTNAM
 create_job()
 {
 	local do_wait="$1"
-	
+
 	verify_prerequisites
 	verify_bucket "${dst_bkt}"
 
 	local uuid=$(get_uuid)
 	local job_id=$(uuid2jobid "${uuid}")
 	labels+=("job_id=${job_id}")
-	env_params+=("rapt_uuid=${uuid}")
+	env_params+=("rapt_uuid=${uuid}" "rapt_jobid=${job_id}" "rapt_build=${RAPT_VERSION}")
 
 	local dst_sto="${dst_bkt}/${job_id}"
 	local slog="${dst_sto}/${job_id}.log"
@@ -399,7 +412,6 @@ create_job()
 	##extra env vars not for RAPT but for job list
 	[[ ! -z ${usr_label} ]] && env_params+=("user_label=${usr_label}")
 	env_params+=("output_uri=${dst_sto}")
-
 
 	TMP_DIR=$(mktemp -d)
 	local gcpyaml="${TMP_DIR}/gcp.yaml"
@@ -418,10 +430,10 @@ YAML
 	local env_vars=$(IFS=',';echo "${env_params[*]}")
 	local job_labels=$(IFS=',';echo "${labels[*]}")
 	local rc=
-	
+
 	opid=$(gcloud beta lifesciences pipelines run \
-		--regions=us-east4 \
-		--location=us-central1 \
+		--regions=${gcp_regions} \
+		--location=${DEFAULT_LOCATION} \
 		--format="value(name.basename())" \
 		--pipeline-file="${gcpyaml}" \
 		--env-vars="${env_vars}" \
@@ -437,7 +449,6 @@ YAML
 		cat "${TMP_DIR}/gcmsg"
 		exit $rc
 	fi
-	
 
 	##Success
 	cat << EOF
@@ -464,7 +475,6 @@ For technical details of this job, run:
 
 EOF
 }
-
 
 list_jobs()
 {
@@ -543,7 +553,6 @@ get_jobinfo()
 	[[ rc -ne 0 ]] && errexit "Invalid job id -> <$1>"
 }
 
-
 cancel_job()
 {
 	gcloud beta lifesciences operations cancel $(get_opid "$1")
@@ -555,7 +564,6 @@ cancel_job()
 ##read args
 subcmd="$1"
 shift
-
 
 case ${subcmd} in
 ${CMD_ACXN})

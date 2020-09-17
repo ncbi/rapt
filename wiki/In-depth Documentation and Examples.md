@@ -27,35 +27,35 @@ RAPT will bring up and shut down Google instances as needed.
   - Follow these steps to Enable
   - Type api in Search product and resources box and select APIs &amp; Services
 
-![](api.png)
+![](./Images/api.png)
 
 - Select ENABLE APIS AND SERVICES
 
-![](enable-api.png)
+![](./Images/enable-api.png)
 
 - Type cloud life in search box and select Google Cloud Life Sciences API
 
-![](cloud-life.png)
+![](./Images/cloud-life.png)
 
 - Choose Enable, use all defaults. You are now finished with this operation.
 
 3. Create GCP bucket:
 - Type bucket in Search product and resources box and select Create bucket 
 
- ![](bucket.png)
+ ![](./Images/bucket.png)
 
 - Name your bucket and select CREATE  
 Note: Please write down the name of your bucket, because the name will be needed to be supplied during execution. Also, we recommend putting your initials in the name is case it will be shared with others.  
 Note: By choosing Create, you bucket is personal, if you want it to share by others, you can make modifications after it is created.  
 Note: If you use someone else&#39;s bucket, you need write permission.  
- ![](name-bucket.png)
+ ![](./Images/name-bucket.png)
 
 - You are now finished with this operation.
 4. Go back to Compute Engine – hint, you can put compute engine into Search product and resources box
 
-5. Start a [Cloud Shell](https://ssh.cloud.google.com/cloudshell/editor) by pressing its icon. A Cloud Shell has certain [limits](https://cloud.google.com/shell/docs/limitations), if you find these limits to restricting you can create a Virtual Machine. When creating the Virtual Machine, make sure you select the option to "Allow full access to all Cloud APIs"
+5. Start a [Cloud Shell](https://ssh.cloud.google.com/cloudshell/editor) by pressing its icon. A Cloud Shell has certain [limits](https://cloud.google.com/shell/docs/limitations), if you find these limits to restricting you can create a Virtual Machine. When creating the Virtual Machine, make sure you select the option to "Allow full access to all Cloud APIs".
 
-![](start-shell.png)
+![](./Images/start-shell.png)
 
 **You are now ready to install and run RAPT**   
 
@@ -124,14 +124,19 @@ Job creation commands:
 
                 --no-usage-reporting
 
-                        optional. Prevents usage report back to NCBI. By default, RAPT sends
-                        usage information back to NCBI for statistical analysis. No personal or
-                        project-specific information (such as the input data) are collected.
+                        optional. Prevents usage report back to NCBI. By default, RAPT sends usage
+                        information back to NCBI for statistical analysis. The information collected
+                        are a unique identifier for the RAPT process, the machine IP address, the 
+                        start and end time of RAPT, and its three modules: SKESA, taxcheck and PGAP. 
+                        No personal or project-specific information (such as the input data) are collected.
+                        
+                   --regions
+                        Optional. Specify the GCP regions parameter. Default is a single region us-central1         
 
                 --machine-type TYPE
 
                         Optional. Specify the type of google cloud virtual machine to run this job.
-                        Default is "n1-highmem-32" (refer to google cloud documentation), which is
+                        Default is "n1-highmem-16" (refer to google cloud documentation), which is
                         suitable for most jobs.
 
                 --boot-disk-size NUM
@@ -281,7 +286,7 @@ See a [detailed description of the annotation output files](https://github.com/n
 ```
 - List the latest N jobs in tabular format:
 ```bash
-./run_rapt_gcp.sh joblist --n; N --csv
+./run_rapt_gcp.sh joblist -n N --csv
 ```
 
 **cancel**
@@ -307,7 +312,7 @@ You can use a fastq or a fasta file produced by Illumina sequencers as input to 
 
 1. Upload to a GCP bucket
 Select upload from GCP bucket screen  
- ![](upload3.png)
+ ![](./Images/upload3.png)
 
 2. Using gcloud commands
 
@@ -319,7 +324,7 @@ gcloud compute scp $HOME/SRR3496277_frag.mapped.fastq instance-1:~
 
 3. Upload function from your Cloud Shell.  
 
- ![](upload4.png)
+ ![](./Images/upload4.png)
 
 To Run RAPT with a fastq file, use the submitfastq command, point to the location of the fastq file, and use the -b option to point to your Google bucket for the output location.
 
@@ -328,7 +333,7 @@ Here is an example of using a file in a Google bucket.
 ./run_rapt_gcp.sh submitfastq gs://ncbi-rapt-scratch2/SRR3496277_frag.mapped.fastq -b gs://ncbi-rapt-scratch2 --label wl_fastq_frag_test --organism "Mycoplasma pirum" --strain "ATCC 25960"
 ```
 
-Please note that the quotes are required for the orgasim and strain options.
+Please note that the quotes are required for the organism and strain options.
 
 Here is an example of using a file in your instance.
 ```bash
