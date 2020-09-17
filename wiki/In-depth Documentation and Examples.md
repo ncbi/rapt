@@ -61,7 +61,7 @@ Note: If you use someone else&#39;s bucket, you need write permission.
 
 Cut and paste or type in the following commands at the command line prompt
 ```bash
-curl -o run_rapt_gcp.sh https://raw.githubusercontent.com/ncbi/rapt/master/script/run_rapt_gcp.sh
+curl -o run_rapt_gcp.sh https://raw.githubusercontent.com/ncbi/rapt/master/dist/run_rapt_gcp.sh
 chmod 755 ./run_rapt_gcp.sh
 ```
 
