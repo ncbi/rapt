@@ -124,20 +124,23 @@ Job creation commands:
 
                 --no-usage-reporting
 
-                        optional. Prevents usage report back to NCBI. By default, RAPT sends usage
+                        Optional. Prevents usage report back to NCBI. By default, RAPT sends usage
                         information back to NCBI for statistical analysis. The information collected
                         are a unique identifier for the RAPT process, the machine IP address, the 
                         start and end time of RAPT, and its three modules: SKESA, taxcheck and PGAP. 
                         No personal or project-specific information (such as the input data) are collected.
                         
                    --regions
-                        Optional. Specify the GCP regions parameter. Default is a single region us-central1         
+                        Optional, comma-separated. Specify in which GCP region(s) RAPT should run.
+	                    Note: it should be regions in which you have sufficient CPU quotas (verify
+	                    at https://console.cloud.google.com/iam-admin/quotas/details). Default is
+		                a single region, us-east4.        
 
                 --machine-type TYPE
 
-                        Optional. Specify the type of google cloud virtual machine to run this job.
-                        Default is "n1-highmem-16" (refer to google cloud documentation), which is
-                        suitable for most jobs.
+                        Optional. Specify the type of google cloud virtual machine to run this job
+	                    (see Google documentation, https://cloud.google.com/compute/docs/machine-types).
+	                    Default is "n1-highmem-16", which is suitable for most jobs.
 
                 --boot-disk-size NUM
 
