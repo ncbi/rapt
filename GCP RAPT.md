@@ -18,7 +18,7 @@ RAPT will bring up and shut down Google instances as needed.
 Here are instructions to execute RAPT once your system is set up. Additional instructions are available on our [wiki page](wiki/GCP%20RAPT%20In-depth%20Documentation%20and%20Examples.md). 
 1.	In a browser, sign into [GCP](https://console.cloud.google.com/)
 2.  Invoke a Cloud Shell
-3.	Download the latest release ([zipball](https://github.com/ncbi/rapt/releases/download/v0.2.0/rapt-v0.2.0.zip) or [tarbal](https://github.com/ncbi/rapt/releases/download/v0.2.0/rapt-v0.2.0.tar.gz)) and extract the GCP RAPT interface script ```run_rapt_gcp.sh``` 
+3.	Download the latest release ([zipball](https://github.com/ncbi/rapt/releases/download/v0.2.0/rapt-v0.2.0.zip) or [tarball](https://github.com/ncbi/rapt/releases/download/v0.2.0/rapt-v0.2.0.tar.gz)) and extract the GCP RAPT interface script ```run_rapt_gcp.sh``` 
 4.	Explore ```run_rapt_gcp.sh```  
 This command will provide instructions and options for running RAPT:
 ```bash
