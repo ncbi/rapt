@@ -2,7 +2,7 @@
 
 This repository contains instruction and examples for running RAPT.`run_rapt.py` is a python script that provides an interface to run the RAPT Docker image on a local machine. "Local" means the same machine as where run_rapt.py is executed. It could be a physical machine on premise, or more conveniently, a cloud VM instance.
 Some basic knowledge of Unix/Linux commands, [SKESA](https://github.com/ncbi/SKESA), and [PGAP](https://github.com/ncbi/pgap) is useful in completing this tutorial.
-Please see our [wiki page](https://bitbucket.ncbi.nlm.nih.gov/projects/GPEXT/repos/rapt-public/browse/wiki) for References, Licenses, FAQs, and In-depth Documentation and Examples. 
+Please see our [wiki page](https://github.com/ncbi/rapt/wiki) for References, Licenses, FAQs, and In-depth Documentation and Examples. 
 
 
 ## System requirements
