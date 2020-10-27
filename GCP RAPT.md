@@ -2,7 +2,7 @@
 
 This repository contains instruction and examples for running RAPT. 
 Some basic knowledge of Unix/Linux commands, [SKESA](https://github.com/ncbi/SKESA), and [PGAP](https://github.com/ncbi/pgap) is useful in completing this tutorial.
-Please see our [wiki page](https://bitbucket.ncbi.nlm.nih.gov/projects/GPEXT/repos/rapt-public/browse/wiki) for References, Licenses, FAQs, and In-depth Documentation and Examples. 
+Please see our [wiki page](https://github.com/ncbi/rapt/wiki) for References, Licenses, FAQs, and In-depth Documentation and Examples. 
 
 
 ## System requirements
