@@ -27,7 +27,7 @@ The machine must satisfy the following minimal requirements:
 ## Quick start
 Here are instructions to execute RAPT once your system is set up. Additional instructions are available on our [wiki page](wiki/Standalone%20RAPT%20In-depth%20Documentation%20and%20Recommendations.md). 
 1.	Go to your machine or instance command line
-2.	Download the latest release ([zipball](https://github.com/ncbi/rapt/releases/download/v0.2.0/rapt-v0.2.0.zip) or [tarbal](https://github.com/ncbi/rapt/releases/download/v0.2.0/rapt-v0.2.0.tar.gz)) and extract the Standalone RAPT interface script ```run_rapt.py``` 
+2.	Download the latest release ([zipball](https://github.com/ncbi/rapt/releases/download/v0.2.0/rapt-v0.2.0.zip) or [tarball](https://github.com/ncbi/rapt/releases/download/v0.2.0/rapt-v0.2.0.tar.gz)) and extract the Standalone RAPT interface script ```run_rapt.py``` 
 3.	Explore ```run_rapt.py```  
 This command will provide instructions and options for running RAPT:
 ```bash
