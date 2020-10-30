@@ -1,6 +1,6 @@
 # Google Cloud Platform (GCP) RAPT – Documentation
 
-This page contains instruction and examples for running *GCP RAPT*. `run_rapt_gcp.sh` is a shell script provides a command line interface to rub *GCP RAPT*. Some basic knowledge of Unix/Linux commands, [SKESA](https://github.com/ncbi/SKESA), and [PGAP](https://github.com/ncbi/pgap) is useful in completing this tutorial.
+This page contains instruction and examples for running *GCP RAPT*. `run_rapt_gcp.sh` is a shell script provides a command line interface to run *GCP RAPT*. Some basic knowledge of Unix/Linux commands, [SKESA](https://github.com/ncbi/SKESA), and [PGAP](https://github.com/ncbi/pgap) is useful in completing this tutorial.
 Please see our [wiki page](https://github.com/ncbi/rapt/wiki) for References, Licenses, FAQs, and In-depth Documentation and Examples. 
 
 
