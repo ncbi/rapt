@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 
 ###############################* Global Constants *##################################
-IMAGE_URI="ncbi/rapt:v0.1.0"
-RAPT_VERSION="rapt-28973346"
-APIS_REQUIRED=("Cloud Life Sciences API" "Compute Engine API" "Cloud OS Login API" "Google Cloud Storage JSON API")
+IMAGE_URI="ncbi/rapt:v0.2.0"
+RAPT_VERSION="rapt-29571188"
 
 GCP_LOGS_VIEWER="https://console.cloud.google.com/logs/viewer"
 
@@ -34,6 +33,7 @@ OPT_VMTYPE="--machine-type"
 OPT_BDSIZE="--boot-disk-size"
 OPT_MAXLST="-n"
 OPT_MAXLST_L="--limit"
+OPT_PROJECT="--project"
 ##OPT_LOCATION="--location"
 OPT_REGIONS="--regions"
 OPT_DELIM="-d"
@@ -49,6 +49,8 @@ FLG_USE_CSV="--csv"
 
 script_name=$(basename "$0")
 
+GCLOUD=gcloud
+
 err()
 {
 	printf "Error: %s\n" "$*" 1>&2
@@ -63,6 +65,7 @@ errexit()
 usage()
 {
 	cat << EOF
+
 Usage: ${script_name}  <command>  [options]
 
 Job creation commands:
@@ -78,53 +81,58 @@ Job creation commands:
 		[${FLG_NOREPORT}] [${OPT_VMTYPE} TYPE] [${OPT_BDSIZE} NUM]
 		[${OPT_JOBTIMEOUT} SECONDS]
 
-		Submit a job to run on sequences in a custom FASTQ formatted file.
-		fastq_uri is expected to point to location in google cloud storage (bucket).
+		Submit a job to run RAPT on Illumina reads in FASTQ or FASTA format.
+		fastq_uri is expected to point to a google cloud storage (bucket).
 
-		The ${OPT_ORG} argument is mandatory, but can contain only the genus part. Species
-		part is recommended but optional. The ${OPT_STRAIN} argument is optional.
-		All taxonomy information provided here will appear in output data.
+		The ${OPT_ORG} argument is mandatory. It is the binomial name or, if the
+		species is unknown, the genus for the sequenced organism. This identifier
+		must be valid in NCBI Taxonomy. The ${OPT_STRAIN} argument is optional.
 
 	${CMD_TEST} <${OPT_BUCKET}|${OPT_BUCKET_L}> [${OPT_LABEL} LABEL] [${FLG_SKESA_ONLY}]
 		[${FLG_NOREPORT}]
 
-		Run the internal test suites. When RAPT does not produce the expected results,
-		it may be helpful to use this command run the test suite to ensure RAPT
-		is functioning normally.
+		Run a test suite. When RAPT does not produce the expected results, it may be 
+		helpful to use this command to ensure RAPT is functioning normally.
 
 		Common options:
 		======================
 		${OPT_BUCKET}|${OPT_BUCKET_L} URL
 
-			Mandatory. Specify the destination storage location to store results and job logs.
+			Mandatory. Specify the destination storage location to store results
+			and job logs.
 
 		${OPT_LABEL} LABEL
 
 			Optional. Tag the job with a custom label, which can be used to filter jobs
-			with the joblist command. Google cloud platform requires that the label
-			can only contain lower case letters, numbers and dash (-). Dot and white spaces
+			with the joblist command. Google cloud platform requires that the label can
+			only contain lower case letters, numbers and dash (-). Dot and white spaces
 			are not allowed.
 
 		${FLG_SKESA_ONLY}
 
-			Only assemble sequences to contigs, but do not annotate.
+			Optional. Only assemble sequences to contigs, but do not annotate.
 
 		${FLG_NOREPORT}
 
-			optional. Prevents usage report back to NCBI. By default, RAPT sends usage information
-			back to NCBI for statistical analysis. The information collected are a unique identifier
-			for the RAPT process, the machine IP address, the start and end time of RAPT, and its
-			three modules: SKESA, taxcheck and PGAP. No personal or project-specific information
-			(such as the input data) are collected.
+			Optional. Prevents usage report back to NCBI. By default, RAPT sends usage  
+			information	back to NCBI for statistical analysis. The information collected
+			are a unique identifier for the RAPT process, the machine IP address, the
+			start and end time of RAPT, and its three modules: SKESA, taxcheck and PGAP.
+			No personal or project-specific information (such as the input data) are
+			collected.
 
 		${OPT_REGIONS}
-			Optional. Specify the GCP regions parameter. Default is a single region ${DEFAULT_REGION}
+
+			Optional, comma-separated. Specify in which GCP region(s) RAPT should run.
+			Note: it should be regions in which you have sufficient CPU quotas (verify
+			at https://console.cloud.google.com/iam-admin/quotas/details). Default is
+			a single region, us-east4.
 
 		${OPT_VMTYPE} TYPE
 
-			Optional. Specify the type of google cloud virtual machine to run this job.
-			Default is "${DEFAULT_VM}" (refer to google cloud documentation), which is
-			suitable for most jobs.
+			Optional. Specify the type of google cloud virtual machine to run this job
+			(see Google documentation, https://cloud.google.com/compute/docs/machine-types).
+			Default is "n1-highmem-16", which is suitable for most jobs.
 
 		${OPT_BDSIZE} NUM
 
@@ -179,10 +187,13 @@ EOF
 	exit $rcode
 }
 
+
+
+
 ##transform strings to comply GCP label requirement: only lowercase, number and dash
 normalize_val()
 {
-	tr '+/.[:blank:]' '-' <<< "$1" | tr '[:upper:]' '[:lower:]'
+	tr '+/.[:blank:]' '-' <<< "$1" | tr '[:upper:]' '[:lower:]' | cut -c1-32
 }
 
 get_uuid()
@@ -197,8 +208,8 @@ uuid2jobid()
 }
 
 ##what is the advantage of using shopt?
-GCP_ACCOUNT=
-GCP_PROJECT=
+export GCP_ACCOUNT=
+export GCP_PROJECT=
 
 verify_prerequisites()
 {
@@ -206,26 +217,8 @@ verify_prerequisites()
 
 	[[ -z $(command -v gsutil 2>/dev/null) ]] && errexit "gsutil is required. See https://cloud.google.com/storage/docs/gsutil_install for help."
 
-	GCP_ACCOUNT=$(gcloud config get-value account 2>/dev/null)
-	[[ -z $GCP_ACCOUNT ]] && errexit "GCP account not set. Refer to 'gcloud auth login' for help to log onto a GCP account."
-
-	GCP_PROJECT=$(gcloud config get-value project 2>/dev/null)
-	[[ -z $GCP_PROJECT ]] && errexit "GCP project not set. Refer to 'gcloud init' for help to initiate a project."
-
-	local enabled_apis=$(gcloud services list)
-
-	has_missing=
-	for api in "${APIS_REQUIRED[@]}"
-	do
-		if ! grep -q "${api}" <<< "${enabled_apis}"
-		then
-			err "${api} is required but not enabled."
-			has_missing=TRUE
-		fi
-	done
-
-	[[ ! -z ${has_missing} ]] && exit 1
-
+	GCP_ACCOUNT=$(${GCLOUD} config get-value account 2>/dev/null)
+	
 }
 
 verify_bucket()
@@ -265,6 +258,7 @@ gcp_regions=${DEFAULT_REGION}
 max_lst=
 format=${DEFAULT_FORMAT}
 delimiter=
+
 parse_opts()
 {
 	while (( $# ))
@@ -279,7 +273,14 @@ parse_opts()
 		${OPT_BUCKET}=*|${OPT_BUCKET_L}=*)
 			dst_bkt="${opt#*=}"
 			;;
-
+		${OPT_PROJECT})
+			
+			GCP_PROJECT="$1"
+			shift
+			;;
+		${OPT_PROJECT}=*)
+			GCP_PROJECT="${opt#*=}"
+			;;
 		${OPT_LABEL})
 			usr_label="$1"
 			shift
@@ -370,7 +371,15 @@ parse_opts()
 
 	##validate
 	[[ ${job_timeout} =~ ^[0-9]+$ ]] && job_timeout="${job_timeout}s"
-
+	
+	if [[ -z ${GCP_PROJECT} ]]	##no project specified
+	then
+		GCP_PROJECT=$(gcloud config get-value project 2>/dev/null)
+		[[ -z ${GCP_PROJECT} ]] && errexit "GCP project not set. Refer to 'gcloud init' for help to initiate a project."
+	fi
+	##add project to all gcloud commands
+	
+	GCLOUD="${GCLOUD} --project=${GCP_PROJECT}"
 }
 
 TMP_DIR=
@@ -389,7 +398,7 @@ create_job()
 {
 	local do_wait="$1"
 
-	verify_prerequisites
+	##verify_prerequisites
 	verify_bucket "${dst_bkt}"
 
 	local uuid=$(get_uuid)
@@ -398,9 +407,9 @@ create_job()
 	env_params+=("rapt_uuid=${uuid}" "rapt_jobid=${job_id}" "rapt_build=${RAPT_VERSION}")
 
 	local dst_sto="${dst_bkt}/${job_id}"
-	local slog="${dst_sto}/${job_id}.log"
-	local vlog="${dst_sto}/${job_id}.verbose.log"
-	local jobout="${dst_sto}/${job_id}_output.tar.gz"
+	##local slog="${dst_sto}/concise.log"
+	local vlog="${dst_sto}/run.log"
+	local jobout="${dst_sto}/output.tar.gz"
 	env_params+=("rapt_vlog_dst=${vlog}")
 
 	if [[ ${#flags[@]} -gt 0 ]]
@@ -420,6 +429,15 @@ create_job()
 actions:
 - imageUri: ${IMAGE_URI}
   commands: []
+
+- imageUri: google/cloud-sdk:slim
+  alwaysRun: true
+  ignoreExitStatus: true
+  commands:
+  - /bin/sh
+  - -c
+  - "gsutil -m -q cp \${rapt_out} ${jobout}"
+
 resources:
   virtualMachine:
     machineType: ${vm_type}
@@ -430,8 +448,7 @@ YAML
 	local env_vars=$(IFS=',';echo "${env_params[*]}")
 	local job_labels=$(IFS=',';echo "${labels[*]}")
 	local rc=
-
-	opid=$(gcloud beta lifesciences pipelines run \
+	opid=$(${GCLOUD} beta lifesciences pipelines run \
 		--regions=${gcp_regions} \
 		--location=${DEFAULT_LOCATION} \
 		--format="value(name.basename())" \
@@ -439,7 +456,7 @@ YAML
 		--env-vars="${env_vars}" \
 		--logging="${vlog}" \
 		"${finputs[@]}" \
-		--outputs="rapt_log=${slog},rapt_out=${jobout}" \
+		--outputs="rapt_out=${jobout}" \
 		--labels="${job_labels}" 2> "${TMP_DIR}/gcmsg")
 
 	rc=$?
@@ -476,6 +493,14 @@ For technical details of this job, run:
 EOF
 }
 
+get_opid()
+{
+	opid=$(${GCLOUD} beta lifesciences operations list --format="value(name)" --filter="metadata.labels.job_id=$1" 2>/dev/null)
+	[[ -z ${opid} || ! ${opid} =~ ^[0-9]+$ ]] && errexit "Invalid job id -> <$1>"
+
+	printf "%s" "$opid"
+}
+
 list_jobs()
 {
 	local fmt_opts="metadata.labels.job_id,"\
@@ -487,7 +512,7 @@ list_jobs()
 "metadata.endTime.date(tz=LOCAL),"\
 "metadata.pipeline.environment.output_uri"
 
-	verify_prerequisites
+	##verify_prerequisites
 
 	printf "%s\n" "Current jobs under project ${GCP_PROJECT}:"
 	printf "%s\n" "-----------------------------------------------------"
@@ -499,8 +524,7 @@ list_jobs()
 
 	local max=()
 	[[ ! -z ${max_lst} && ${max_lst} =~ ^[0-9]+$ ]] && max=("--limit=${max_lst}")
-
-	gcloud beta lifesciences operations list --filter="metadata.labels.app=rapt" --format="table(${fmt_opts})" ${max[@]} |
+	${GCLOUD} beta lifesciences operations list --filter="metadata.labels.app=rapt" --format="table(${fmt_opts})" ${max[@]} |
 	while read line
 	do
 		local d=''
@@ -508,13 +532,13 @@ list_jobs()
 		do
 			case $w in
 			10)
-				printf "%s" "${d}Finished"
+				printf "%s" "${d}Done"
 				;;
 			00)
 				printf "%s" "${d}Running"
 				;;
 			11 | 01)
-				printf "%s" "${d}Aborted"
+				printf "%s" "${d}Failed"
 				;;
 			*)
 				printf "%s" "${d}${w}"
@@ -526,14 +550,8 @@ list_jobs()
 	done
 }
 
-get_opid()
-{
-	opid=$(gcloud beta lifesciences operations list --format="value(name)" --filter="metadata.labels.job_id=$1" 2>/dev/null)
 
-	[[ -z ${opid} || ! ${opid} =~ ^[0-9]+$ ]] && errexit "Invalid job id -> <$1>"
 
-	printf "%s" "$opid"
-}
 
 get_jobinfo()
 {
@@ -544,10 +562,9 @@ get_jobinfo()
 "metadata.startTime,metadata.endTime,metadata.labels,"\
 "metadata.pipeline.environment.output_uri,"\
 "metadata.pipeline.environment.user_label,"\
-"metadata.pipeline.resources)"
-
-	gcloud beta lifesciences operations describe "$opid" --format="${datafmt}" 2>/dev/null
-
+"metadata.pipeline.resources,"\
+"metadata.events)"
+	${GCLOUD} beta lifesciences operations describe "$opid" --format="${datafmt}" 2>/dev/null
 	rc=$?
 
 	[[ rc -ne 0 ]] && errexit "Invalid job id -> <$1>"
@@ -555,7 +572,7 @@ get_jobinfo()
 
 cancel_job()
 {
-	gcloud beta lifesciences operations cancel $(get_opid "$1")
+	${GCLOUD} beta lifesciences operations cancel $(get_opid "$1")
 }
 ####################################* main  *#######################################
 

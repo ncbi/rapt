@@ -11,14 +11,18 @@ from distutils.spawn import find_executable
 ##to be compatible with python2
 from abc import ABCMeta, abstractmethod
 
-IMAGE_URI="ncbi/rapt:v0.1.0"
+IMAGE_URI="ncbi/rapt:v0.2.0"
 
-RAPT_VERSION="rapt-28973346"
+RAPT_VERSION="rapt-29571188"
 
 ACT_FUNC_TEST = 'functest'
 ACT_VERSION = 'version'
 FLG_SKESA_ONLY = 'skesa_only'
 FLG_NO_REPORT = 'no_report'
+
+CONCISE_LOG='concise.log'
+VERBOSE_LOG='verbose.log'
+
 
 ##################################################################
 #	Environment variable names used
@@ -27,7 +31,7 @@ ENV_RAPT_BUILD = 'rapt_build'	##rapt version
 ENV_UUID = 'rapt_uuid'	##uuid, mainly for pgap log.
 ENV_JOBID = 'rapt_jobid'	##jobid is related to uuid, but still receive from wrapper script so that we do not dup the algorithm that compute jobid from uuid
 ENV_LOG = 'rapt_log'	##concise log location.
-
+ENV_VLOG_DST = 'rapt_vlog_dst'	##verbose log location. Different interpretation in GCP and non-GCP
 ##actions. 
 EVN_ACT = 'rapt_act'
 ENV_OPTS = 'rapt_opts'
@@ -52,7 +56,9 @@ ARGDEST_ITUSER = 'it_user'
 ARGDEST_MAXMEM = 'maxmem'
 ARGDEST_MAXCPU = 'maxcpu'
 
+ARGDEST_DO_VERBOSE_STD = 'verbose_std'
 META_CURR_USR = '__curr_user__'
+
 
 ##################################################################
 #	Mount points
@@ -81,21 +87,35 @@ def uuid2jobid(__uuid):
 	return ''.join(__uuid.split('-'))[1:11]
 
 def eprint(msg):
-	print(msg, file=sys.stderr, flush=True)
+	print(msg, file=sys.stderr)
 
 ##my abstract class
 class ContainerRunner(object):
 	__metaclass__ = ABCMeta
 
-	def __init__(self, args, parser):
+	def __init__(self, bin_path, args, parser):
+		self.bin_path=bin_path
 		self.parser=parser
 		self.envs=[]
 		self.mounts=[]
 		self.runmode=[]
 		self.cmdltail=[]
 		self.is_null=True
+		self.is_version=False
+		##used to suppress stdout and stderr
+		self.verbose_out=False
+		self.std_out=None
+		self.std_err=None
 		self.rc = 0
-
+		
+		
+		##internal use
+		self.verbose_out = get_arg(args, ARGDEST_DO_VERBOSE_STD)
+		if not self.verbose_out:
+			##The lengthy output to console are all on stderr, by the stream handler of python logger. We leave stdout open in case we need to output some message from inside the image.
+			##Stream handler is necessary for RAPT-GCP
+			##self.std_out = open(os.devnull, 'w')
+			self.std_err = open(os.devnull, 'w')
 		##option
 		flags = get_arg(args, ARGDEST_FLAGS)
 		if flags:
@@ -105,6 +125,8 @@ class ContainerRunner(object):
 		if action:
 			self.add_env(EVN_ACT, action)
 			self.is_null=False
+			if action == ACT_VERSION:
+				self.is_version=True
 		else:
 			acxn = get_arg(args, ARGDEST_ACXN)
 			if acxn:
@@ -167,8 +189,18 @@ class ContainerRunner(object):
 		if not outdir:
 			outdir = os.getcwd()
 		else:
+			##for python2 compatibility
+			if not os.path.exists(outdir):
+				try:
+					os.makedirs(outdir, 0o755)
+				except Exception as e:
+					eprint('Unable to create output directory {}: {}'.format(outdir, e))
+					self.rc = 1
+					return
 			outdir = os.path.abspath(outdir)
-
+			
+				
+		self.prog_msg = 'RAPT is now running, it may take a long time to finish. To see the progress, track the verbose log file {}/raptout_{}/{}.'.format(outdir, jobid, VERBOSE_LOG)
 		self.add_mount(outdir, OUTPUT_MOUNT)
 
 		refdir = get_arg(args, ARGDEST_REFDATA)
@@ -177,15 +209,18 @@ class ContainerRunner(object):
 			self.add_mount(refdir, REF_DATA_MOUNT)
 
 		self.add_env(ENV_RAPT_BUILD, RAPT_VERSION)
-		self.add_env(ENV_LOG, 'concise.log')
+		##we do not need to specify log files anymore, they are always created inside the output dir. 
 
 	def run(self):
+
 		if self.rc != 0:
 			return self.rc
 		elif self.is_null:
 			eprint('No effective input')
 			self.parser.print_help()
 			return 1
+		if not self.verbose_out and not self.is_version:
+			print(self.prog_msg)
 		return self.run_container()
 
 	@abstractmethod
@@ -217,8 +252,8 @@ class DockerCompatibleRunner(ContainerRunner):
 	BIND_SWITCH = '-v'
 	RUN_CMD = 'run'
 
-	def __init__(self, args, parser):
-		super(DockerCompatibleRunner, self).__init__(args, parser)
+	def __init__(self, bin_path, args, parser):
+		super(DockerCompatibleRunner, self).__init__(bin_path, args, parser)
 
 	def add_env(self, name, val):
 		self.envs.extend([DockerCompatibleRunner.ENV_SWITCH, '{}={}'.format(name, val)])
@@ -239,21 +274,20 @@ class DockerCompatibleRunner(ContainerRunner):
 			self.cmdltail.append('/bin/bash')
 
 	def run_container(self):
-		cmdl=[type(self).RUN_BINARY, DockerCompatibleRunner.RUN_CMD]
+		cmdl=[self.bin_path, DockerCompatibleRunner.RUN_CMD]
 		cmdl.extend(self.runmode)
 		cmdl.extend(self.envs)
 		cmdl.extend(self.mounts)
 		cmdl.extend([IMAGE_URI])
 		cmdl.extend(self.cmdltail)
-		print('Running command:\n{}'.format(' '.join(cmdl)))
-		return subprocess.call(cmdl)
-		#print('{}'.format(' '.join(cmdl)))
-		#return 0
+		##print('Running command:\n{}'.format(' '.join(cmdl)))
+		
+		return subprocess.call(cmdl, stdout=self.std_out, stderr=self.std_err)
 
 class DockerRunner(DockerCompatibleRunner):
 	RUN_BINARY = 'docker'
-	def __init__(self, args, parser):
-		super(DockerRunner, self).__init__(args, parser)
+	def __init__(self, bin_path, args, parser):
+		super(DockerRunner, self).__init__(bin_path, args, parser)
 
 	def set_runmode(self, user, is_it=False):
 		super(DockerRunner, self).set_runmode(user, is_it)
@@ -262,8 +296,8 @@ class DockerRunner(DockerCompatibleRunner):
 
 class PodmanRunner(DockerCompatibleRunner):
 	RUN_BINARY = 'podman'
-	def __init__(self, args, parser):
-		super(PodmanRunner, self).__init__(args, parser)
+	def __init__(self, bin_path, args, parser):
+		super(PodmanRunner, self).__init__(bin_path, args, parser)
 
 class SingularityRunner(ContainerRunner):
 	##PULL_BINARY = 'sregistry'
@@ -273,8 +307,8 @@ class SingularityRunner(ContainerRunner):
 	RUN_CMD = 'run'
 	RUN_CMD_IT = 'shell'
 
-	def __init__(self, args, parser):
-		super(SingularityRunner, self).__init__(args, parser)
+	def __init__(self, bin_path, args, parser):
+		super(SingularityRunner, self).__init__(bin_path, args, parser)
 		self.run_cmd=SingularityRunner.RUN_CMD
 
 	def add_env(self, name, val):
@@ -312,14 +346,13 @@ class SingularityRunner(ContainerRunner):
 			kv = e.split('=')
 			sub_env[kv[0]] = kv[1]
 
-		cmdl = [SingularityRunner.RUN_BINARY]
+		cmdl = [self.bin_path]
 		cmdl.append(self.run_cmd)
 		cmdl.extend(self.mounts)
 		cmdl.append(imgurl)
 
-		print('Running command:\n{} with environments {}'.format(' '.join(cmdl), ';'.join(self.envs)))
-
-		subp = subprocess.Popen(cmdl, env=sub_env)
+		##print('Running command:\n{} with environments {}'.format(' '.join(cmdl), ';'.join(self.envs)))
+		subp = subprocess.Popen(cmdl, env=sub_env, stdout=self.std_out, stderr=self.std_err)
 		subp.wait()
 
 		return subp.returncode
@@ -333,21 +366,35 @@ def find_docker_prog():
 		p = r.RUN_BINARY
 		ploc = find_executable(p)
 		if ploc:
-			return r, ploc
-	return None, None
+			return ploc
+	return None
+
+def detect_real_prog(ploc):
+	##some may disguise other as docker, so run with --version command and parse output
+	tproc = subprocess.Popen([ploc, '--version'], stdout=subprocess.PIPE)
+	tproc.wait()
+	
+	real_prog = tproc.stdout.read().decode('utf-8').split()[0].lower()
+	
+	for r in VALID_RUNNERS:
+		if r.RUN_BINARY == real_prog:
+			return r
+	
+	eprint('WARNING: {} support as {} alternative has not been tested'.format(real_prog, DockerRunner.RUN_BINARY))
+	
+	return DockerRunner
+	
 
 def main(args, parser):
 
 	##must determine the container system first
-	bin_name=None
 	bin_path=None
 
-	##bin_name = 'docker'
-	##bin_path = '/usr/bin/docker'
+	bin_name=None
 
 	dockerbin = get_arg(args, ARGDEST_DOCKER)
 
-	my_run_class=None
+	
 	if dockerbin:
 		bin_name = os.path.basename(dockerbin)
 		ploc = os.path.dirname(dockerbin)
@@ -359,25 +406,19 @@ def main(args, parser):
 			bin_path = find_executable(bin_name)
 
 	else:
-		my_run_class, bin_path = find_docker_prog()
+		bin_path = find_docker_prog()
 
 	if not bin_path:
-		eprint('Cannot find docker compatible program {}'.format(bin_name))
+		msg='Cannot find docker compatible program'
+		if bin_name:
+			msg+=' {}'.format(bin_name)
+		eprint(msg)
 		return 1
-
-	if not my_run_class:
-		bin_name = bin_name.split('.')[0].lower()
-
-		for r in VALID_RUNNERS:
-			if bin_name == r.RUN_BINARY:
-				my_run_class = r
-				break
-		if not my_run_class:
-			eprint('{} is not a supported container technology'.format(bin_name))
-			return 1
-
-	my_runner = my_run_class(args, parser)
-
+	
+	
+	my_run_class = detect_real_prog(bin_path)
+	my_runner = my_run_class(bin_path, args, parser)
+	
 	return my_runner.run()
 
 if '__main__' == __name__:
@@ -387,22 +428,22 @@ if '__main__' == __name__:
 
 	excl_1 = parser.add_mutually_exclusive_group(required=False)
 
-	excl_1.add_argument('-a', '--submitacc', dest=ARGDEST_ACXN, help='Run RAPT against an SRA run accession.')
+	excl_1.add_argument('-a', '--submitacc', dest=ARGDEST_ACXN, help='Run RAPT on an SRA run accession (sra_acxn).')
 
-	excl_1.add_argument('-q', '--submitfastq', dest=ARGDEST_FASTQ, help='Run RAPT against sequences in a custom FASTQ formatted file.')
+	excl_1.add_argument('-q', '--submitfastq', dest=ARGDEST_FASTQ, help='Run RAPT on Illumina reads in FASTQ or FASTA format. The file must be readable from the computer that runs RAPT. The --organism argument is mandatory for this type of input, while the --strain argument is optional.')
 
-	excl_1.add_argument('-v', '--version', dest=ARGDEST_ACT, action='store_const', const=ACT_VERSION, help='Display version information')
+	excl_1.add_argument('-v', '--version', dest=ARGDEST_ACT, action='store_const', const=ACT_VERSION, help='Display the current RAPT version')
 
-	excl_1.add_argument('--test', dest=ARGDEST_ACT, action='store_const', const=ACT_FUNC_TEST, help='Run a set of internal tests.')
+	excl_1.add_argument('--test', dest=ARGDEST_ACT, action='store_const', const=ACT_FUNC_TEST, help='Run a test suite. When RAPT does not produce the expected results, it may be 	helpful to use this command to ensure RAPT is functioning normally.')
 
-	parser.add_argument('--organism', dest=ARGDEST_ORGA, nargs='?', help='Specify the name (Genus<space>species) of the organism with which the sequences in the FASTQ file are associated, Required with \'-q\' command')
+	parser.add_argument('--organism', dest=ARGDEST_ORGA, help='Specify the binomial name or, if the species is unknown, the genus for the sequenced organism. This identifier must be valid in NCBI Taxonomy.')
 
 	parser.add_argument('--strain', dest=ARGDEST_STRAIN, help='Specify the strain of the organism')
 
 	##flags
-	parser.add_argument('--skesa-only', dest=ARGDEST_FLAGS, action='append_const', const=FLG_SKESA_ONLY, help='Run assembly part (skesa) only, do not run pgap')
+	parser.add_argument('--skesa-only', dest=ARGDEST_FLAGS, action='append_const', const=FLG_SKESA_ONLY, help='Only assemble sequences to contigs, but do not annotate.')
 
-	parser.add_argument('--no-usage-reporting', dest=ARGDEST_FLAGS, action='append_const', const=FLG_NO_REPORT, help='Do not send usage report back to NCBI.')
+	parser.add_argument('--no-usage-reporting', dest=ARGDEST_FLAGS, action='append_const', const=FLG_NO_REPORT, help='Prevents usage report back to NCBI. By default, RAPT sends usage information back to NCBI for statistical analysis. The information collected are a unique identifier for the RAPT process, the machine IP address, the start and end time of RAPT, and its three modules: SKESA, taxcheck and PGAP. No personal or project-specific information (such as the input data) are collected')
 
 	parser.add_argument('-o', '--output-dir', dest=ARGDEST_OUTDIR, help='Directory to store results and logs. If omitted, use current directory')
 
@@ -415,7 +456,7 @@ if '__main__' == __name__:
 
 	parser.add_argument('--tag', dest=ARGDEST_JOBID, help='Specify a custom string to tag the job')
 
-	parser.add_argument('-D', '--docker', dest=ARGDEST_DOCKER, choices=VALID_RUNNERS, help='Use specified docker compatible program to run RAPT image')
+	parser.add_argument('-D', '--docker', dest=ARGDEST_DOCKER, choices=[r.RUN_BINARY for r in VALID_RUNNERS], help='Use specified docker compatible program to run RAPT image')
 
 	##special action for -it
 	class ItAct(argparse.Action):
@@ -429,7 +470,7 @@ if '__main__' == __name__:
 				setattr(ns, self.dest, META_CURR_USR)
 	##internal debug use, will delete in real release
 	parser.add_argument('-it', dest=ARGDEST_ITUSER, nargs='?', action=ItAct, help=argparse.SUPPRESS)
-
+	parser.add_argument('--do-verbose-std', dest=ARGDEST_DO_VERBOSE_STD, action='store_true', help=argparse.SUPPRESS)
 	args = parser.parse_args()
 
 	sys.exit(main(args, parser))
