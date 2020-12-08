@@ -11,6 +11,8 @@ To download the latest RAPT, run the following command lines at your linux promp
 ~$ curl -sSLo rapt.tar.gz https://github.com/ncbi/rapt/releases/download/v0.2.0/rapt-v0.2.0.tar.gz
 ~$ tar -xzf rapt.tar.gz && rm -f rapt.tar.gz
 ```
+
+
 There should be two scripts in your directory now, `run_rapt_gcp.sh` and `run_rapt.py`, corresponding to the two variations of RAPT:  Google Cloud Platform (GCP) RAPT and Standalone RAPT. [GCP RAPT](GCP%20RAPT.md) is designed to run on GCP and is for users with GCP accounts (please note this is different from a gmail account), and [Standalone RAPT](Standalone%20RAPT.md) can run on any computing environments meeting a few pre-requisites.
 
 For instructions on running RAPT, please go to their respective documentation pages: [GCP RAPT](GCP%20RAPT.md) or [Standalone RAPT](Standalone%20RAPT.md).
