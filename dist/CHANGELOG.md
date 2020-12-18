@@ -1,3 +1,14 @@
+### Release v0.2.2
+ - Code refactoring, remove duplicated codes
+ - All codes are subject to lint with NCBI rules
+ - Add message to show data-download retrying
+ - Stand-alone RAPT: Default in silence mode, but print error messages if container returns non-zero status
+ - Fix NCBI PINGER ```ncbi_app``` values for different flavors (GCP-RAPT, Stand-alone RAPT and web-rapt)
+ - Remove duplicated sequence file ```annot.fna``` from output
+ - Added input sequence assemble statistics
+ - Added retry logic to ```srapath``` to address sporadic failures
+ - Fix final status error
+
 ### Release v0.2.0
  - GCP-RAPT: added `--project` option to specify custom project.
  - GCP-RAPT: log file names are fixed to concise.log and verbose.log
