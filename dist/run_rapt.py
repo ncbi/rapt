@@ -11,7 +11,7 @@ from distutils.spawn import find_executable
 ##to be compatible with python2
 from abc import ABCMeta, abstractmethod
 
-IMAGE_URI="ncbi/rapt:v2.2.6"
+IMAGE_URI="ncbi/rapt:v1.2.3"
 
 RAPT_VERSION="rapt-30372431"
 

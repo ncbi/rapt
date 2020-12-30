@@ -1,4 +1,4 @@
-### Release v2.2.6
+### Release v1.2.3
  - GCP-RAPT: added `--project` option to specify custom project.
  - GCP-RAPT: log file names are fixed to concise.log and verbose.log
  - GCP-RAPT: log files are included in the output archive
