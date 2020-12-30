@@ -1,3 +1,16 @@
+### Release v2.2.6
+ - GCP-RAPT: added `--project` option to specify custom project.
+ - GCP-RAPT: log file names are fixed to concise.log and verbose.log
+ - GCP-RAPT: log files are included in the output archive
+ - GCP-RAPT: added *metadata.events* to `jobdetails` command output
+ - GCP-RAPT: `joblist` command displays job status as *Done* instead of *Finished* and *Failed* instead of *Aborted* to reflect the actual job status
+ - Standalone RAPT: suppress stderr log stream by default and add option to enable it
+ - PINGER ncbi_app name changed from _rapt_ to _raptdocker_. 
+ - Fix verbose log capture bug
+ - Includes RAPT build id at the beginning of log files
+ - Added variation analysis to annotation by new version of PGAPX.
+ - Simplified PINGER usage report data
+
 ### Release v0.2.2
  - Code refactoring, remove duplicated codes
  - All codes are subject to lint with NCBI rules

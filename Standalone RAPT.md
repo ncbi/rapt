@@ -31,7 +31,7 @@ Here are instructions to execute RAPT once your system is set up. Additional ins
 2. Download the latest release by executing the following commands:<br>
 
     ```
-    ~$ curl -sSLo rapt.tar.gz https://github.com/ncbi/rapt/releases/download/v0.2.2/rapt-v0.2.2.tar.gz
+    ~$ curl -sSLo rapt.tar.gz https://github.com/ncbi/rapt/releases/download/v2.2.6/rapt-v2.2.6.tar.gz
     ~$ tar -xzf rapt.tar.gz && rm -f rapt.tar.gz
     ```
 3. Run `./run_rapt.py -h` to see the *Stand-alone RAPT* usage information<br>
