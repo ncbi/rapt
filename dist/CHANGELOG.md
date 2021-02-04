@@ -1,4 +1,16 @@
-### Release v1.2.3
+### Release v0.3.0
+- new PGAP version
+- sends email notifications
+- accepts forward and reverse reads in two files
+- monitors user quotas
+- verifies taxonomic data
+- accepts an argument to stop upon taxonomic disagreement
+- bug fixes, including invalid SRA index
+- improved logging
+- improved error messaging
+- cleaned up output files
+
+### Release v2.2.6
  - GCP-RAPT: added `--project` option to specify custom project.
  - GCP-RAPT: log file names are fixed to concise.log and verbose.log
  - GCP-RAPT: log files are included in the output archive

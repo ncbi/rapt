@@ -1,12 +1,11 @@
-RELEASE: v1.2.3
-DATE: 12-29-2020
-BUILD: rapt-30372431
-SKESA: 2.4.0
-PGAPX: 2020-09-24.build4894
+RELEASE: v0.3.0
+DATE: 02-04-2021
+BUILD: rapt-31140224
+SKESA: 2.5.0
+PGAPX: 2021-01-11.build5132
 
 DESCRIPTION:
 
-DESCRIPTION:
-	GCP-RAPT now displays job status in "joblist" command as "Done" and "Failed" instead of "Finished" and "Aborted" for more clarity; and more information has been added to the output of "jobdetails" command for easier problem identification. Log files are now included in the result archive "output.tar.gz" so that it is the only file to download under one jobid.
-	
-	This release also provides a python script, run_rapt.py, to run RAPT agnostically on customer's own system with python and docker-compatible container system installed. Refer to the documentation for details.
+The motivation for this release is to include a new PGAP version, which should speed RAPT up quite a bit. webRAPT now sends email notifications, accepts forward and reverse reads in two files, monitors user quotas, and verifies taxonomic data and accepts an argument to stop upon taxonomic disagreement. 
+
+We have included bug fixes (in particular the invalid SRA index one), improved logging and error messaging, and cleaned up output files.
