@@ -1,3 +1,11 @@
+### Release v0.3.1
+- Added --network command line to specify custom network for container
+- Some exit codes merged and combined
+- Exclude dummy strings for taxonomy names
+- Remove redundent errors.xml file from pgap output
+- Updated SKESA version and ngs/vdb libs
+- Added docker daemon status check
+
 ### Release v0.3.0
 - new PGAP version
 - sends email notifications

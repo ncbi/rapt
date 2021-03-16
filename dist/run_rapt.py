@@ -12,9 +12,9 @@ from distutils.spawn import find_executable
 ##to be compatible with python2
 from abc import ABCMeta, abstractmethod
 
-IMAGE_URI="ncbi/rapt:v0.3.0"
+IMAGE_URI="ncbi/rapt:v0.3.1"
 
-RAPT_VERSION="rapt-31140224"
+RAPT_VERSION="rapt-31712126"
 
 DEFAULT_REF_DIR = '.rapt_refdata'
 
@@ -67,6 +67,7 @@ ARGDEST_DOCKER = 'dockerbin'
 ARGDEST_ITUSER = 'it_user'
 ARGDEST_MAXMEM = 'maxmem'
 ARGDEST_MAXCPU = 'maxcpu'
+ARGDEST_NETWORK = 'docker_network'
 
 ARGDEST_DO_VERBOSE_STD = 'verbose_std'
 META_CURR_USR = '__curr_user__'
@@ -240,6 +241,10 @@ class ContainerRunner(object):
         if maxcpu:
             self.set_maxcpus(maxcpu)
 
+        dk_network = get_arg(args, ARGDEST_NETWORK)
+        if dk_network:
+            self.set_network(dk_network)
+
         run_uuid = get_uuid()
         jobid = uuid2jobid(run_uuid)
 
@@ -350,6 +355,10 @@ class ContainerRunner(object):
         pass
 
     @abstractmethod
+    def set_network(self, network):
+        pass
+
+    @abstractmethod
     def set_runmode(self, user, is_it=False):
         pass
 
@@ -378,6 +387,9 @@ class DockerCompatibleRunner(ContainerRunner):
         ##if 'Windows' == platform.system()
         self.runmode.extend(['--cpu-count' if 'Windows' == platform.system() else '--cpus', maxcpus])
 
+    def set_network(self, network):
+        self.runmode.extend(['--network', network])
+
     def set_runmode(self, user, is_it=False):
         if is_it:
             self.runmode.extend(['-it'])
@@ -400,6 +412,14 @@ class DockerRunner(DockerCompatibleRunner):
     RUN_BINARY = 'docker'
     def __init__(self, bin_path, args, parser):
         super(DockerRunner, self).__init__(bin_path, args, parser)
+        # test run docker, see if it is accessible
+        test_run = subprocess.Popen([bin_path, 'info'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        test_run.wait()
+        if test_run.returncode != 0:
+            eprint('===============================================\nIt seems the docker daemon is not running. Try to start the docker service\n(by running "sudo systemctl start docker" or "sudo service docker start"\ndepends on your system) and add your user id to the docker group (by running\n"sudo usermod -a -G docker $USER"), then log out and log back in. If you do not\nhave superuser privilege, ask your system admins for help. \n===============================================')
+            eprint('Error message:\n{}'.format(test_run.stdout.read().decode('utf-8')))
+            self.rc = 1
+            
 
     def set_runmode(self, user, is_it=False):
         super(DockerRunner, self).set_runmode(user, is_it)
@@ -434,6 +454,9 @@ class SingularityRunner(ContainerRunner):
 
     def set_maxcpus(self, maxcpus):
         pass
+
+    def set_network(self, network):
+        self.runmode.extend(['--net', '--network', network])
 
     def set_runmode(self, user, is_it=False):
         if is_it:
@@ -572,6 +595,8 @@ if '__main__' == __name__:
     parser.add_argument('-m', '--memory', dest=ARGDEST_MAXMEM, help='Specify the maximal memory (number in GB) the container should use.')
 
     parser.add_argument('-D', '--docker', dest=ARGDEST_DOCKER, choices=[r.RUN_BINARY for r in VALID_RUNNERS], help='Use specified docker compatible program to run RAPT image')
+
+    parser.add_argument('-n', '--network', dest=ARGDEST_NETWORK, help='Specify the network the container should use. Note: this parameter is passed directly to the --network parameter to the container. RAPT does not check the validity of the argument.')
 
     ##special action for -it
     class ItAct(argparse.Action):
