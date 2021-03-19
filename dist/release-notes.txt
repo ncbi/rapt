@@ -1,9 +1,6 @@
-RELEASE: v0.3.1
-DATE: 03-16-2021
-BUILD: rapt-31712126
+RELEASE: v0.3.2
+DATE: 03-19-2021
+BUILD: rapt-31854332
 SKESA: 2.5.0
 PGAPX: 2021-01-11.build5132
 
-DESCRIPTION:
-
-This is mainly a bug-fix release, with two minor but helpful features added to the stand-alone RAPT script (run_rapt.py): It now checks whether the docker daemon is running before attempting to launch the container, and prompt user with proper message if not; and a --network argument is added for users to specify a custom network for the container. This parameter is passed directly to the command line to run the container. Refer to documentation for 'docker run' command.

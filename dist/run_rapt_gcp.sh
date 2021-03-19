@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
 ###############################* Global Constants *##################################
-IMAGE_URI="ncbi/rapt:v0.3.1"
-RAPT_VERSION="rapt-31712126"
+IMAGE_URI="ncbi/rapt:v0.3.2"
+RAPT_VERSION="rapt-31854332"
 
 GCP_LOGS_VIEWER="https://console.cloud.google.com/logs/viewer"
 
-DEFAULT_VM="n1-highmem-16"
+DEFAULT_VM="n1-highmem-8"
 DEFAULT_BDISKSIZE=128
 DEFAULT_FORMAT=table
 DEFAULT_JOB_TIMEOUT="86400s"    ##24 hours
@@ -120,7 +120,7 @@ Job creation commands:
         ${FLG_NOREPORT}
 
             Optional. Prevents usage report back to NCBI. By default, RAPT sends usage
-            information    back to NCBI for statistical analysis. The information collected
+            information back to NCBI for statistical analysis. The information collected
             are a unique identifier for the RAPT process, the machine IP address, the
             start and end time of RAPT, and its three modules: SKESA, taxcheck and PGAP.
             No personal or project-specific information (such as the input data) are
@@ -136,13 +136,13 @@ Job creation commands:
             Optional, comma-separated. Specify in which GCP region(s) RAPT should run.
             Note: it should be regions in which you have sufficient CPU quotas (verify
             at https://console.cloud.google.com/iam-admin/quotas/details). Default is
-            a single region, us-east4.
+            a single region, ${DEFAULT_REGION}.
 
         ${OPT_VMTYPE} TYPE
 
             Optional. Specify the type of google cloud virtual machine to run this job
             (see Google documentation, https://cloud.google.com/compute/docs/machine-types).
-            Default is "n1-highmem-16", which is suitable for most jobs.
+            Default is "${DEFAULT_VM}", which is suitable for most jobs.
 
         ${OPT_BDSIZE} NUM
 
