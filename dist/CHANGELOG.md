@@ -1,3 +1,7 @@
+### Release v0.3.2
+- change default machine type from n1-himem-16 to n1-himem-8
+- attach ncbi_user to pinger events if run by web-rapt
+
 ### Release v0.3.1
 - Added --network command line to specify custom network for container
 - Some exit codes merged and combined

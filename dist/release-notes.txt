@@ -4,3 +4,6 @@ BUILD: rapt-31854332
 SKESA: 2.5.0
 PGAPX: 2021-01-11.build5132
 
+DESCRIPTION:
+
+This release changes the default machine type for GCP-RAPT from n1-highmem-16 to n1-himem-8 as our cost-analysis shows the later is more cost-effective.
