@@ -12,9 +12,9 @@ from distutils.spawn import find_executable
 ##to be compatible with python2
 from abc import ABCMeta, abstractmethod
 
-IMAGE_URI="ncbi/rapt:v0.3.2"
+IMAGE_URI="ncbi/rapt:v0.4.0"
 
-RAPT_VERSION="rapt-31854332"
+RAPT_VERSION=""rapt-33889352""
 
 DEFAULT_REF_DIR = '.rapt_refdata'
 
@@ -27,15 +27,19 @@ FLG_STOP_ON_ERRORS = 'stop_on_errors'
 CONCISE_LOG='concise.log'
 VERBOSE_LOG='verbose.log'
 
+RAPT_FLAVOR='raptdocker'
 
 ##################################################################
 #    Environment variable names used
 ##################################################################
+ENV_RAPT_NCBI_APP='rapt_ncbi_app'
+
 ENV_UUID = 'rapt_uuid'    ##uuid, mainly for pgap log.
 ENV_JOBID = 'rapt_jobid'    ##jobid is related to uuid, but still receive from wrapper script so that we do not dup the algorithm that compute jobid from uuid
 ENV_LOG = 'rapt_log'    ##concise log location.
 ENV_VLOG_DST = 'rapt_vlog_dst'    ##verbose log location. Different interpretation in GCP and non-GCP
 ##actions.
+ENV_REFDATA_SRC = 'rapt_refsrc'
 EVN_ACT = 'rapt_act'
 ENV_OPTS = 'rapt_opts'
 
@@ -124,6 +128,8 @@ class ContainerRunner(object):
 
 
         ##internal use
+        self.add_env(ENV_RAPT_NCBI_APP, RAPT_FLAVOR)  # applog rapt flavor
+        self.add_env(ENV_REFDATA_SRC, 's3')  # explicit: download refdata from gcs
         self.verbose_out = get_arg(args, ARGDEST_DO_VERBOSE_STD)
         if not self.verbose_out:
             ##The lengthy output to console are all on stderr, by the stream handler of python logger. We leave stdout open in case we need to output some message from inside the image.
@@ -373,6 +379,7 @@ class DockerCompatibleRunner(ContainerRunner):
 
     def __init__(self, bin_path, args, parser):
         super(DockerCompatibleRunner, self).__init__(bin_path, args, parser)
+        self.clean_up = '--rm'
 
     def add_env(self, name, val):
         self.envs.extend([DockerCompatibleRunner.ENV_SWITCH, '{}={}'.format(name, val)])
@@ -392,11 +399,14 @@ class DockerCompatibleRunner(ContainerRunner):
 
     def set_runmode(self, user, is_it=False):
         if is_it:
+            self.clean_up = None
             self.runmode.extend(['-it'])
             self.cmdltail.append('/bin/bash')
 
     def run_container(self):
         cmdl=[self.bin_path, DockerCompatibleRunner.RUN_CMD]
+        if self.clean_up:
+            cmdl.append(self.clean_up)
         cmdl.extend(self.runmode)
         cmdl.extend(self.envs)
         cmdl.extend(self.mounts)
@@ -419,7 +429,7 @@ class DockerRunner(DockerCompatibleRunner):
             eprint('===============================================\nIt seems the docker daemon is not running. Try to start the docker service\n(by running "sudo systemctl start docker" or "sudo service docker start"\ndepends on your system) and add your user id to the docker group (by running\n"sudo usermod -a -G docker $USER"), then log out and log back in. If you do not\nhave superuser privilege, ask your system admins for help. \n===============================================')
             eprint('Error message:\n{}'.format(test_run.stdout.read().decode('utf-8')))
             self.rc = 1
-            
+
 
     def set_runmode(self, user, is_it=False):
         super(DockerRunner, self).set_runmode(user, is_it)
@@ -511,7 +521,7 @@ def detect_real_prog(ploc):
     real_prog = tproc.stdout.read().decode('utf-8').split()[0].lower()
 
     for r in VALID_RUNNERS:
-        if r.RUN_BINARY == real_prog:
+        if real_prog.startswith(r.RUN_BINARY):
             return r
 
     eprint('WARNING: {} support as {} alternative has not been tested'.format(real_prog, DockerRunner.RUN_BINARY))
@@ -527,7 +537,6 @@ def main(args, parser):
     bin_name=None
 
     dockerbin = get_arg(args, ARGDEST_DOCKER)
-
 
     if dockerbin:
         bin_name = os.path.basename(dockerbin)

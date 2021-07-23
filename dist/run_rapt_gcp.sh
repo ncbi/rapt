@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 ###############################* Global Constants *##################################
-IMAGE_URI="ncbi/rapt:v0.3.2"
-RAPT_VERSION="rapt-31854332"
+IMAGE_URI="ncbi/rapt:v0.4.0"
+RAPT_VERSION=""rapt-33889352""
 
 GCP_LOGS_VIEWER="https://console.cloud.google.com/logs/viewer"
 
@@ -404,7 +404,7 @@ cleanup()
 trap cleanup EXIT
 
 ##job related
-env_params=()
+env_params=("rapt_refsrc=gcs" "rapt_ncbi_app=rapt")
 finputs=()
 labels=("app=rapt" "rapt_version=${RAPT_VERSION}" "user=${USER}" "host=${HOSTNAME}" "image_tag=$(normalize_val ${IMAGE_URI##*:})")
 

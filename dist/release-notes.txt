@@ -1,9 +1,9 @@
-RELEASE: v0.3.2
-DATE: 03-19-2021
-BUILD: rapt-31854332
+RELEASE: v0.4.0
+DATE: 07-22-2021
+BUILD: "rapt-33889352"
 SKESA: 2.5.0
-PGAPX: 2021-01-11.build5132
+PGAPX: 2021-07-01.build5508
 
 DESCRIPTION:
 
-This release changes the default machine type for GCP-RAPT from n1-highmem-16 to n1-himem-8 as our cost-analysis shows the later is more cost-effective.
+This release updated PGAPX to 2021-07-01.build5508, made improvements to SRA metadata parsing algorithms and fixed several bugs to make RAPT more robust. For standalone RAPT, '--rm' are added to the run command so that the container is removed upon exit.

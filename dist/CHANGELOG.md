@@ -1,3 +1,12 @@
+### Release v0.4.0
+* Update SKESA to 2.5.0 and PGAPX to 2021-07-01.build5508
+* Remove container upon exit with '--rm' (docker and podman)
+* Refactoring to use config loader
+* Download reference data from Google storage if run on GCP (run_rapt_gcp.sh)
+* Improved organism name parsing algorithm
+* Distinguish different flavors of RAPT in applog
+* Some bug fixes
+
 ### Release v0.3.2
 - change default machine type from n1-himem-16 to n1-himem-8
 - attach ncbi_user to pinger events if run by web-rapt
