@@ -1,3 +1,8 @@
+### Release v0.4.1
+* Fix double quoted string syntax error
+* try use fewer words of genus_species string and retry if taxcheck fails
+* try to run GCP RAPT even if network connection detection failed.
+
 ### Release v0.4.0
 * Update SKESA to 2.5.0 and PGAPX to 2021-07-01.build5508
 * Remove container upon exit with '--rm' (docker and podman)
