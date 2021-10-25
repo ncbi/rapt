@@ -1,9 +1,9 @@
-RELEASE: v0.4.1
-DATE: 10-12-2021
-BUILD: rapt-34986039
+RELEASE: v0.4.2
+DATE: 10-25-2021
+BUILD: rapt-35244699
 SKESA: 2.5.0
 PGAPX: 2021-07-01.build5508
 
 DESCRIPTION:
 
-This release fixed a bug (double quote of version string that causes syntax error when running standalone run_rapt.py), added logic to tolerate minor taxonomy name mismatch, and retry upon SRA download failure caused by network glitches.
+This release update SKESA to use a newer version of boost in order to handle some flavor of gzipped input file.

@@ -1,3 +1,6 @@
+### Release v0.4.2
+- upgrade to booster 1.76 for SKESA
+
 ### Release v0.4.1
 * Fix double quoted string syntax error
 * try use fewer words of genus_species string and retry if taxcheck fails
