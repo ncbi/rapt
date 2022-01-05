@@ -1,3 +1,8 @@
+### Release v0.5.0
+- updated PGAPX to 2021-11-29.build574
+- use dedicated ```prefetch``` binary instead of curl to retrieve SRA data
+
+
 ### Release v0.4.2
 - upgrade to booster 1.76 for SKESA
 
