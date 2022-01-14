@@ -1,10 +1,8 @@
-RELEASE: v2.2.7
-DATE: 12-29-2020
-BUILD: rapt-30372431
+RELEASE: v0.2.0
+DATE: 10-27-2020
+BUILD: rapt-29571188
 SKESA: 2.4.0
 PGAPX: 2020-09-24.build4894
-
-DESCRIPTION:
 
 DESCRIPTION:
 	GCP-RAPT now displays job status in "joblist" command as "Done" and "Failed" instead of "Finished" and "Aborted" for more clarity; and more information has been added to the output of "jobdetails" command for easier problem identification. Log files are now included in the result archive "output.tar.gz" so that it is the only file to download under one jobid.
