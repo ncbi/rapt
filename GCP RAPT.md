@@ -20,7 +20,7 @@ Here are instructions to execute RAPT once your system is set up. Additional ins
 3.	Download the latest release by executing the following commands:
 
     ```
-    ~$ curl -sSLo rapt.tar.gz https://github.com/ncbi/rapt/releases/download/v0.5.0/rapt-v0.5.0.tar.gz
+    ~$ curl -sSLo rapt.tar.gz https://github.com/ncbi/rapt/releases/download/v2.2.4/rapt-v2.2.4.tar.gz
     ~$ tar -xzf rapt.tar.gz && rm -f rapt.tar.gz
     ```
 4.	Run `run_rapt_gcp.sh help` to see the *GCP RAPT* usage information.
