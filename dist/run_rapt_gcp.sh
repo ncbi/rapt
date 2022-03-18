@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
 ###############################* Global Constants *##################################
-IMAGE_URI="us.gcr.io/ncbi-seqplus-rapt-build/rapt/rapt:RC-0.2.2-30372431"
-RAPT_VERSION="rapt-30372431"
+IMAGE_URI="ncbi/rapt:v0.5.1"
+RAPT_VERSION="rapt-37347638"
 
 GCP_LOGS_VIEWER="https://console.cloud.google.com/logs/viewer"
 
-DEFAULT_VM="n1-highmem-16"
+DEFAULT_VM="n1-highmem-8"
 DEFAULT_BDISKSIZE=128
 DEFAULT_FORMAT=table
 DEFAULT_JOB_TIMEOUT="86400s"    ##24 hours
@@ -43,6 +43,7 @@ OPT_JOBTIMEOUT="--timeout"
 ##flags
 FLG_SKESA_ONLY="--skesa-only"
 FLG_NOREPORT="--no-usage-reporting"
+FLG_STOPONERRORS="--stop-on-errors"
 FLG_USE_CSV="--csv"
 
 ####################################### Utilities ####################################
@@ -71,27 +72,31 @@ Usage: ${script_name}  <command>  [options]
 Job creation commands:
 
     ${CMD_ACXN} <sra_acxn> <${OPT_BUCKET}|${OPT_BUCKET_L} URL> [${OPT_LABEL} LABEL]
-        [${FLG_SKESA_ONLY}] [${FLG_NOREPORT}] [${OPT_VMTYPE} TYPE] [${OPT_BDSIZE} NUM]
-        [${OPT_JOBTIMEOUT} SECONDS]
+        [${FLG_SKESA_ONLY}] [${FLG_NOREPORT}] [${FLG_STOPONERRORS}] [${OPT_VMTYPE} TYPE]
+        [${OPT_BDSIZE} NUM] [${OPT_JOBTIMEOUT} SECONDS]
 
         Submit a job to run RAPT on an SRA run accession (sra_acxn).
 
     ${CMD_FASTQ} <fastq_uri> <${OPT_ORG} "Genus species"> [${OPT_STRAIN} "ATCC xxxx"]
         <${OPT_BUCKET}|${OPT_BUCKET_L} URL> [${OPT_LABEL} LABEL] [${FLG_SKESA_ONLY}]
-        [${FLG_NOREPORT}] [${OPT_VMTYPE} TYPE] [${OPT_BDSIZE} NUM]
+        [${FLG_NOREPORT}] [${FLG_STOPONERRORS}] [${OPT_VMTYPE} TYPE] [${OPT_BDSIZE} NUM]
         [${OPT_JOBTIMEOUT} SECONDS]
 
         Submit a job to run RAPT on Illumina reads in FASTQ or FASTA format.
-        fastq_uri is expected to point to a google cloud storage (bucket).
+        fastq_uri is expected to point to a google cloud storage (bucket). If forward
+        and reverse readings are in two separate files, put them in the same storage
+        bucket and delimit their names with a comma (no space!) in fastq_uri:
+
+            ${CMD_FASTQ} gs://mybucket/forward.fastq,reverse.fastq
 
         The ${OPT_ORG} argument is mandatory. It is the binomial name or, if the
         species is unknown, the genus for the sequenced organism. This identifier
         must be valid in NCBI Taxonomy. The ${OPT_STRAIN} argument is optional.
 
     ${CMD_TEST} <${OPT_BUCKET}|${OPT_BUCKET_L}> [${OPT_LABEL} LABEL] [${FLG_SKESA_ONLY}]
-        [${FLG_NOREPORT}]
+        [${FLG_NOREPORT}] [${FLG_STOPONERRORS}]
 
-        Run a test suite. When RAPT does not produce the expected results, it may be 
+        Run a test suite. When RAPT does not produce the expected results, it may be
         helpful to use this command to ensure RAPT is functioning normally.
 
         Common options:
@@ -114,25 +119,30 @@ Job creation commands:
 
         ${FLG_NOREPORT}
 
-            Optional. Prevents usage report back to NCBI. By default, RAPT sends usage  
-            information    back to NCBI for statistical analysis. The information collected
+            Optional. Prevents usage report back to NCBI. By default, RAPT sends usage
+            information back to NCBI for statistical analysis. The information collected
             are a unique identifier for the RAPT process, the machine IP address, the
             start and end time of RAPT, and its three modules: SKESA, taxcheck and PGAP.
             No personal or project-specific information (such as the input data) are
             collected.
+
+        ${FLG_STOPONERRORS}
+
+            Optional. Do not run PGAP annotation pipeline when the genome sequence is
+            misassigned or contaminated.
 
         ${OPT_REGIONS}
 
             Optional, comma-separated. Specify in which GCP region(s) RAPT should run.
             Note: it should be regions in which you have sufficient CPU quotas (verify
             at https://console.cloud.google.com/iam-admin/quotas/details). Default is
-            a single region, us-east4.
+            a single region, ${DEFAULT_REGION}.
 
         ${OPT_VMTYPE} TYPE
 
             Optional. Specify the type of google cloud virtual machine to run this job
             (see Google documentation, https://cloud.google.com/compute/docs/machine-types).
-            Default is "n1-highmem-16", which is suitable for most jobs.
+            Default is "${DEFAULT_VM}", which is suitable for most jobs.
 
         ${OPT_BDSIZE} NUM
 
@@ -218,7 +228,7 @@ verify_prerequisites()
     [[ -z $(command -v gsutil 2>/dev/null) ]] && errexit "gsutil is required. See https://cloud.google.com/storage/docs/gsutil_install for help."
 
     GCP_ACCOUNT=$(${GCLOUD} config get-value account 2>/dev/null)
-    
+
 }
 
 verify_bucket()
@@ -274,7 +284,7 @@ parse_opts()
             dst_bkt="${opt#*=}"
             ;;
         ${OPT_PROJECT})
-            
+
             GCP_PROJECT="$1"
             shift
             ;;
@@ -292,7 +302,7 @@ parse_opts()
         ${OPT_REGIONS})
             gcp_regions="$1"
             shift
-            ;;    
+            ;;
         ${OPT_REGIONS}=*)
             gcp_regions="${opt#*=}"
             ;;
@@ -303,7 +313,7 @@ parse_opts()
             ;;
         ${OPT_VMTYPE}=*)
             vm_type="${opt#*=}"
-            ;;    
+            ;;
 
         ${OPT_BDSIZE})
             bd_size="$1"
@@ -345,6 +355,10 @@ parse_opts()
             flags+=("no_report")
             ;;
 
+        ${FLG_STOPONERRORS})
+            flags+=("stop_on_errors")
+            ;;
+
         ${FLG_USE_CSV})
             format="csv"
             ;;
@@ -371,14 +385,14 @@ parse_opts()
 
     ##validate
     [[ ${job_timeout} =~ ^[0-9]+$ ]] && job_timeout="${job_timeout}s"
-    
+
     if [[ -z ${GCP_PROJECT} ]]    ##no project specified
     then
         GCP_PROJECT=$(gcloud config get-value project 2>/dev/null)
         [[ -z ${GCP_PROJECT} ]] && errexit "GCP project not set. Refer to 'gcloud init' for help to initiate a project."
     fi
     ##add project to all gcloud commands
-    
+
     GCLOUD="${GCLOUD} --project=${GCP_PROJECT}"
 }
 
@@ -390,7 +404,7 @@ cleanup()
 trap cleanup EXIT
 
 ##job related
-env_params=()
+env_params=("rapt_refsrc=gcs" "rapt_ncbi_app=rapt")
 finputs=()
 labels=("app=rapt" "rapt_version=${RAPT_VERSION}" "user=${USER}" "host=${HOSTNAME}" "image_tag=$(normalize_val ${IMAGE_URI##*:})")
 
@@ -608,13 +622,27 @@ ${CMD_FASTQ})
 
     [[ ! -z ${strain} ]] && env_params+=("rapt_fastq_strain=${strain}")
 
-    finputs+=("--inputs" "rapt_fastq=${fastq_uri}")
+    fq_fwd=${fastq_uri%%\,*}
+    if [[ ${fq_fwd} == ${fastq_uri} ]]  # only one file
+    then
+        finputs+=("--inputs" "rapt_fastq=${fastq_uri}")
+    else
+        fq_rev=${fastq_uri##*\,}
+        fq_rev_base=${fq_rev##*\/}
+        if [[ ${fq_rev_base} == ${fq_rev} ]]    # second file no path
+        then
+            # assume path always exists
+            fq_rev=${fq_fwd%\/*}/${fq_rev}
+        fi
+
+        finputs+=("--inputs" "rapt_fastq_fwd=${fq_fwd},rapt_fastq_rev=${fq_rev}")
+    fi
+
     create_job
     ;;
 
 ${CMD_JOBLST})
     parse_opts "$@"
-
     list_jobs
     ;;
 

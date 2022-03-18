@@ -1,4 +1,53 @@
-### Release v1.2.2
+### Release v0.5.1
+* PGAP at 2022-02-10.build5872
+
+### Release v0.5.0
+- updated PGAPX to 2021-11-29.build574
+- use dedicated ```prefetch``` binary instead of curl to retrieve SRA data
+
+
+### Release v0.4.2
+- upgrade to booster 1.76 for SKESA
+
+### Release v0.4.1
+* Fix double quoted string syntax error
+* try use fewer words of genus_species string and retry if taxcheck fails
+* try to run GCP RAPT even if network connection detection failed.
+
+### Release v0.4.0
+* Update SKESA to 2.5.0 and PGAPX to 2021-07-01.build5508
+* Remove container upon exit with '--rm' (docker and podman)
+* Refactoring to use config loader
+* Download reference data from Google storage if run on GCP (run_rapt_gcp.sh)
+* Improved organism name parsing algorithm
+* Distinguish different flavors of RAPT in applog
+* Some bug fixes
+
+### Release v0.3.2
+- change default machine type from n1-himem-16 to n1-himem-8
+- attach ncbi_user to pinger events if run by web-rapt
+
+### Release v0.3.1
+- Added --network command line to specify custom network for container
+- Some exit codes merged and combined
+- Exclude dummy strings for taxonomy names
+- Remove redundent errors.xml file from pgap output
+- Updated SKESA version and ngs/vdb libs
+- Added docker daemon status check
+
+### Release v0.3.0
+- new PGAP version
+- sends email notifications
+- accepts forward and reverse reads in two files
+- monitors user quotas
+- verifies taxonomic data
+- accepts an argument to stop upon taxonomic disagreement
+- bug fixes, including invalid SRA index
+- improved logging
+- improved error messaging
+- cleaned up output files
+
+### Release v2.2.6
  - GCP-RAPT: added `--project` option to specify custom project.
  - GCP-RAPT: log file names are fixed to concise.log and verbose.log
  - GCP-RAPT: log files are included in the output archive
