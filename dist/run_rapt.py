@@ -12,9 +12,9 @@ from distutils.spawn import find_executable
 ##to be compatible with python2
 from abc import ABCMeta, abstractmethod
 
-IMAGE_URI="ncbi/rapt:v0.5.1"
+IMAGE_URI="ncbi/rapt:v0.5.2"
 
-RAPT_VERSION="rapt-37347638"
+RAPT_VERSION="rapt-38092134"
 
 DEFAULT_REF_DIR = '.rapt_refdata'
 
@@ -23,7 +23,7 @@ ACT_VERSION = 'version'
 FLG_SKESA_ONLY = 'skesa_only'
 FLG_NO_REPORT = 'no_report'
 FLG_STOP_ON_ERRORS = 'stop_on_errors'
-
+FLG_AUTO_CORRECT_TAX = 'auto_correct_tax'
 CONCISE_LOG='concise.log'
 VERBOSE_LOG='verbose.log'
 
@@ -589,6 +589,8 @@ if '__main__' == __name__:
     parser.add_argument('--no-usage-reporting', dest=ARGDEST_FLAGS, action='append_const', const=FLG_NO_REPORT, help='Prevents usage report back to NCBI. By default, RAPT sends usage information back to NCBI for statistical analysis. The information collected are a unique identifier for the RAPT process, the machine IP address, the start and end time of RAPT, and its three modules: SKESA, taxcheck and PGAP. No personal or project-specific information (such as the input data) are collected')
 
     parser.add_argument('--stop-on-errors', dest=ARGDEST_FLAGS, action='append_const', const=FLG_STOP_ON_ERRORS, help='Do not run PGAP annotation pipeline when the genome sequence is misassigned or contaminated')
+
+    parser.add_argument('--auto-correct-tax', dest=ARGDEST_FLAGS, action='append_const', const=FLG_AUTO_CORRECT_TAX, help='If the genome sequence is misassigned or contaminated and ANI predicts an organism with HIGH confidence, use it for PGAP instead of the one provided by the user')
 
     parser.add_argument('-o', '--output-dir', dest=ARGDEST_OUTDIR, help='Directory to store results and logs. If omitted, use current directory')
 

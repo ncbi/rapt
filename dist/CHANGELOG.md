@@ -1,3 +1,7 @@
+### Release v0.5.2
+* PGAP at 2022-04-14.build6021
+* Add `--auto-correct-tax` switch
+
 ### Release v0.5.1
 * PGAP at 2022-02-10.build5872
 

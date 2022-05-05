@@ -1,9 +1,9 @@
-RELEASE: v0.5.1
-DATE: 03-18-2022
-BUILD: rapt-37347638
+RELEASE: v0.5.2
+DATE: 05-04-2022
+BUILD: rapt-38092134
 SKESA: 2.5.0
-PGAPX: 2022-02-10.build5872
+PGAPX: 2022-04-14.build6021
 
 DESCRIPTION:
 
-This release updates PGAP to 2022-02-10.build5872
+This release updates PGAP to 2022-04-14.build6021, and implemented --auto-correct-tax switch: when specified, in the case that the genome sequence is misassigned or contaminated and ANI predicts an organism with HIGH confidence, the system will use the predicted organism for PGAP instead of the one provided by the user.

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 ###############################* Global Constants *##################################
-IMAGE_URI="ncbi/rapt:v0.5.1"
-RAPT_VERSION="rapt-37347638"
+IMAGE_URI="ncbi/rapt:v0.5.2"
+RAPT_VERSION="rapt-38092134"
 
 GCP_LOGS_VIEWER="https://console.cloud.google.com/logs/viewer"
 
@@ -44,6 +44,7 @@ OPT_JOBTIMEOUT="--timeout"
 FLG_SKESA_ONLY="--skesa-only"
 FLG_NOREPORT="--no-usage-reporting"
 FLG_STOPONERRORS="--stop-on-errors"
+FLG_AUTO_CORRECT_TAX="--auto-correct-tax"
 FLG_USE_CSV="--csv"
 
 ####################################### Utilities ####################################
@@ -72,8 +73,8 @@ Usage: ${script_name}  <command>  [options]
 Job creation commands:
 
     ${CMD_ACXN} <sra_acxn> <${OPT_BUCKET}|${OPT_BUCKET_L} URL> [${OPT_LABEL} LABEL]
-        [${FLG_SKESA_ONLY}] [${FLG_NOREPORT}] [${FLG_STOPONERRORS}] [${OPT_VMTYPE} TYPE]
-        [${OPT_BDSIZE} NUM] [${OPT_JOBTIMEOUT} SECONDS]
+        [${FLG_SKESA_ONLY}] [${FLG_NOREPORT}] [${FLG_STOPONERRORS}] [${FLG_AUTO_CORRECT_TAX}]
+        [${OPT_VMTYPE} TYPE] [${OPT_BDSIZE} NUM] [${OPT_JOBTIMEOUT} SECONDS]
 
         Submit a job to run RAPT on an SRA run accession (sra_acxn).
 
@@ -131,6 +132,11 @@ Job creation commands:
             Optional. Do not run PGAP annotation pipeline when the genome sequence is
             misassigned or contaminated.
 
+        ${FLG_AUTO_CORRECT_TAX}
+            Optional. If the genome sequence is misassigned or contaminated and ANI predicts
+            an organism with HIGH confidence, use it for PGAP instead of the one provided by
+            the user.
+        
         ${OPT_REGIONS}
 
             Optional, comma-separated. Specify in which GCP region(s) RAPT should run.
@@ -359,6 +365,9 @@ parse_opts()
             flags+=("stop_on_errors")
             ;;
 
+        ${FLG_AUTO_CORRECT_TAX})
+            flags+=("auto_correct_tax")
+            ;;
         ${FLG_USE_CSV})
             format="csv"
             ;;
