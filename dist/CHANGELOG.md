@@ -1,3 +1,6 @@
+### Release v0.5.3
+# Bugfix: SRA/metadata retrieval methods correction according to the recent change of corresponding services
+
 ### Release v0.5.2
 * PGAP at 2022-04-14.build6021
 * Add `--auto-correct-tax` switch
