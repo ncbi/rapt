@@ -7,6 +7,7 @@ With RAPT you will:<br>
 * **assemble your reads** into contigs<br>
 * **assign a scientific name** to the assembly<br>
 * **predict coding and non-coding genes** *de novo*, including anti-microbial resistance (AMR) genes and virulence factors, based on expert-curated data such as hidden Markov models and conserved domain architectures<br>
+* **estimate the completeness and contamination level** of the annotated assembly<br>
 
 If you are new to RAPT, please visit our [wiki page](https://github.com/ncbi/rapt/wiki) for detailed information, and watch a [short webinar](https://www.youtube.com/watch?v=7trM1pKAVXQ).
 
@@ -14,7 +15,7 @@ If you are new to RAPT, please visit our [wiki page](https://github.com/ncbi/rap
 
 To use the latest version, download the RAPT command-line interface with the following commands:
 ```
-~$ curl -sSLo rapt.tar.gz https://github.com/ncbi/rapt/releases/download/v0.5.3/rapt-v0.5.3.tar.gz
+~$ curl -sSLo rapt.tar.gz https://github.com/ncbi/rapt/releases/download/v0.5.4/rapt-v0.5.4.tar.gz
 ~$ tar -xzf rapt.tar.gz && rm -f rapt.tar.gz
 ```
 

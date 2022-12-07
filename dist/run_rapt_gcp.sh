@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 ###############################* Global Constants *##################################
-IMAGE_URI="ncbi/rapt:v0.5.3"
-RAPT_VERSION="rapt-39223259"
+IMAGE_URI="ncbi/rapt:v0.5.4"
+RAPT_VERSION="rapt-41589182"
 
 GCP_LOGS_VIEWER="https://console.cloud.google.com/logs/viewer"
 

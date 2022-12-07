@@ -1,3 +1,7 @@
+### Release v0.5.4
+# Update PGAPX to 2022-10-03.build6384
+
+
 ### Release v0.5.3
 # Bugfix: SRA/metadata retrieval methods correction according to the recent change of corresponding services
 
