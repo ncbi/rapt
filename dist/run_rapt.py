@@ -12,9 +12,9 @@ from distutils.spawn import find_executable
 ##to be compatible with python2
 from abc import ABCMeta, abstractmethod
 
-IMAGE_URI="ncbi/rapt:v0.5.4"
+IMAGE_URI="ncbi/rapt:v0.5.5"
 
-RAPT_VERSION="rapt-41589182"
+RAPT_VERSION="rapt-45639894"
 
 DEFAULT_REF_DIR = '.rapt_refdata'
 

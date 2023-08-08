@@ -15,7 +15,7 @@ If you are new to RAPT, please visit our [wiki page](https://github.com/ncbi/rap
 
 To use the latest version, download the RAPT command-line interface with the following commands:
 ```
-~$ curl -sSLo rapt.tar.gz https://github.com/ncbi/rapt/releases/download/v0.5.4/rapt-v0.5.4.tar.gz
+~$ curl -sSLo rapt.tar.gz https://github.com/ncbi/rapt/releases/download/v0.5.5/rapt-v0.5.5.tar.gz
 ~$ tar -xzf rapt.tar.gz && rm -f rapt.tar.gz
 ```
 

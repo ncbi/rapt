@@ -1,10 +1,13 @@
-RELEASE: v0.5.4
-DATE: 12-07-2022
-BUILD: rapt-41589182
+RELEASE: v0.5.5
+DATE: 08-08-2023
+BUILD: rapt-45639894
 SKESA: 2.5.0
-PGAPX: 2022-10-03.build6384
+PGAPX: 2023-05-17.build6771
 
 DESCRIPTION:
 
-Update PGAPX to 2022-10-03.build6384
+Updated stand-alone PGAP to version 2023-05-17.build6771 for:
+* Better handling of species that changed name or taxonomic lineage.
+* Addition of attributes (Gene Ontology terms, EC numbers, gene symbols) to more protein-coding features, by propagation from curated conserved domain architectures (CDD architectures)
+* Incremental improvements in structural algorithm
 
