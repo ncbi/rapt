@@ -1,9 +1,13 @@
+<span style="color: #900; font-size: 15pt">As of December 2024, NCBI's pilot tool, Read assembly and Annotation Pipeline (RAPT) tool will no longer be available. We encourage you to check out NCBI’s suite of assembly and annotation tools including the genome assembler [SKESA](https://github.com/ncbi/SKESA), the taxonomic assignment tool [ANI](https://pubmed.ncbi.nlm.nih.gov/33270901), and the prokaryotic genome annotation pipeline ([PGAP](https://pubmed.ncbi.nlm.nih.gov/33270901)). [Learn more...](https://ncbiinsights.ncbi.nlm.nih.gov/2024/09/16/rapt-to-retire-december-2024/)</span>
+
+---
+
 # Read Assembly and Annotation Pipeline Tool (RAPT)
 
 RAPT is an NCBI pipeline designed for **assembling and annotating short genomic sequencing reads** obtained from **bacterial or archaeal isolates** *de novo*. It takes an SRA run or a fasta or fastq file of Illumina reads as input and produces an assembled and annotated genome of **quality comparable to RefSeq** in a couple of hours. 
 RAPT consists of three major components, the genome assembler [SKESA](https://github.com/ncbi/SKESA), the taxonomic assignment tool [ANI](https://pubmed.ncbi.nlm.nih.gov/29792589/) and the Prokaryotic Genome Annotation Pipeline ([PGAP](https://github.com/ncbi/pgap)).
 
-With RAPT you will:  <br>
+With RAPT you will:<br>
 * **assemble your reads** into contigs<br>
 * **assign a scientific name** to the assembly<br>
 * **predict coding and non-coding genes** *de novo*, including anti-microbial resistance (AMR) genes and virulence factors, based on expert-curated data such as hidden Markov models and conserved domain architectures<br>
